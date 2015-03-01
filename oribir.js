@@ -15,6 +15,8 @@
 
     x18n.register("en", {
         params: {
+            "oasis": "Environment",
+            "mu": "Mutation rate",
             "popsize": "Population size",
             "observation": "Observation period"
         },
@@ -30,6 +32,8 @@
     });
     x18n.register("ja", {
         params: {
+            "oasis": "オアシス",
+            "mu": "突然変異率",
             "popsize": "集団サイズ",
             "observation": "観察期間"
         },
@@ -45,6 +49,10 @@
     });
 
     var params = [
+        [t("params.oasis"),
+         "oasis", 1, 3, 1, 2],
+        [t("params.mu") + " (<var>μ</var>)",
+         "mu", 1e-3, 1e-1, 1e-3, 1e-2],
         [t("params.popsize") + " (<var>N</var>)",
          "popsize", 100, 10000, 100, 1000],
         [t("params.observation"),
@@ -59,8 +67,7 @@
 
     var input_items = d3.select("form")
         .selectAll("dl")
-        .data(params)
-        .enter()
+        .data(params).enter()
         .append("dl")
         .attr("id", function(d){return d[1];})
         .attr("class", "parameter");
@@ -110,7 +117,7 @@
 
     var svg_padding = {
         top:    20,
-        right:  20,
+        right:  30,
         bottom: 60,
         left:   80
     };
@@ -149,33 +156,42 @@
             .text(t("axes.distance"))
             .attr("text-anchor", 'middle');
 
-
-    var canvas = d3.select("#field").append("svg")
-            .attr("width", 600)
+    var field = d3.select("#field").append("svg")
+            .attr("width", "100%")
             .attr("height", 400);
-    canvas.append("rect")
+    field.append("rect")
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("fill", "#FF6600");
 
+    function Oasis(x, y) {
+        var oasis = field.append("g");
+        oasis.append("ellipse")
+            .attr("rx", 80).attr("ry", 30)
+            .attr("cx", 40).attr("cy", 15)
+            .attr("fill", "#0066FF")
+            .attr("stroke", "#99CCFF")
+            .attr("stroke-width", "6");
+        oasis.attr("transform", "translate("+ x +","+ y +")");
+    }
+    Oasis(100, 100);
+    Oasis(300, 300);
+    Oasis(500, 200);
+
     function Bird() {
-        var bird = canvas.append("g");
+        var bird = field.append("g");
         bird.append("rect")
             .attr("width", 100)
             .attr("height", 100)
             .attr("fill", "none");
         bird.append("line")
-            .attr("x1", 5)
-            .attr("x2", 95)
-            .attr("y1", 90)
-            .attr("y2", 90)
+            .attr("x1", 5).attr("x2", 95)
+            .attr("y1", 90).attr("y2", 90)
             .attr("stroke-width", 10)
             .attr("stroke", "#000000");
         bird.append("line")
-            .attr("x1", 85)
-            .attr("x2", 95)
-            .attr("y1", 90)
-            .attr("y2", 90)
+            .attr("x1", 85).attr("x2", 95)
+            .attr("y1", 90).attr("y2", 90)
             .attr("stroke-width", 10)
             .attr("stroke", "#FFFF00");
         bird.append("ellipse")
@@ -190,45 +206,46 @@
             .attr("fill", "none")
             .attr("stroke", "#000000")
             .attr("stroke-width", 10);
-        var x = Math.random() * 600;
-        var y = Math.random() * 300;
+        var x = Math.random() * parseInt(field.style("width"));
+        var y = Math.random() * parseInt(field.style("height"));
         bird.attr("transform", "translate("+ x +","+ y +")");
         return bird;
     }
     var num_steps = 10;
+    var step = 100;
     function fly(obj) {
         var t = 1000 * Math.random();
-        var xorig = d3.transform(obj.attr("transform")).translate[0];
-        var yorig = d3.transform(obj.attr("transform")).translate[1];
+        var x = d3.transform(obj.attr("transform")).translate[0];
+        var y = d3.transform(obj.attr("transform")).translate[1];
+        var distance = 100;
         for (var i=1; i<=num_steps; ++i) {
             var prop = i / num_steps;
-            var x = 50 * (1 - Math.cos(Math.PI * prop)) + xorig;
-            var y = -30 * Math.sin(Math.PI * prop) + yorig;
+            var dx = 0.5 * distance * (1 - Math.cos(Math.PI * prop));
+            var dy = -30 * Math.sin(Math.PI * prop);
             var angle = -8 * Math.sin(2 * Math.PI * prop);
-            obj.transition()
-                .delay(100 * i + t)
-                .duration(100)
-                .ease("linear")
+            obj.transition().ease("linear")
+                .delay(step * i + t)
+                .duration(step)
                 .attr("transform",
-                      "translate("+ x + "," + y  +"), rotate("+angle+",0,100)");
+                      "translate("+ (x+dx) + "," + (y+dy)  +"), rotate("+angle+",0,100)");
         }
-        if (x > 600) {
-            obj.transition().delay(1200)
+        var field_width = parseInt(field.style("width"));
+        if (x + distance > field_width) {
+            obj.transition().delay(step * num_steps * 1.2)
                 .duration(0).ease("linear")
-                .attr("transform", "translate("+(x - 800) +","+ y +")");
+                .attr("transform", "translate("+(x - field_width - distance) +","+ y +")");
         }
         obj.transition().delay(2000).each("end", function(){
             d3.select(this).call(fly);
         });
     }
     for (var i=0; i<3; ++i) {
-        fly(Bird());
+        fly(new Bird());
     }
 
     function update_width() {
         var width = parseInt(d3.select("#graph").style("width"));
-        var fixation_width = parseInt(d3.select("svg").style("padding-right"));
-        svg.attr("width", width - fixation_width);
+        svg.attr("width", width);
         var svg_width = parseInt(svg.attr("width"));
         var panel_width = svg_width - svg_padding.left - svg_padding.right;
         var panel_height = parseInt(panel.attr("height"));
@@ -239,8 +256,8 @@
                   "translate(0," + panel_height + ")")
             .call(x_axis);
         x_axis_label.attr("transform", "translate("+
-              ((svg_width - svg_padding.left - svg_padding.right) / 2)
-                          +","+ (panel_height + 50) +")");
+              ((svg_width - svg_padding.left - svg_padding.right) / 2)+","+
+              (panel_height + 50) +")");
         panel.selectAll("path").remove();
         plot();
     }
@@ -261,29 +278,24 @@
             .call(y_axis);
 
         x_axis_label.attr("transform", "translate("+
-              ((svg_width - svg_padding.left - svg_padding.right) / 2)
-              +","+ (panel_height + 50) +")");
+              ((svg_width - svg_padding.left - svg_padding.right) / 2)+
+              ","+ (panel_height + 50) +")");
         y_axis_label.attr("transform",
               "translate(-50,"+ panel_height/2 +")rotate(-90)");
     }
 
     function simulation() {
-        var N = parseFloat(params_now["popsize"]);
-        var s = parseFloat(params_now["selection"]);
-        var q0 = parseFloat(params_now["frequency"]);
-        var T = parseInt(params_now["observation"]);
-        var rep = parseInt(params_now["replicates"]);
+        var N = parseFloat(params_now.popsize);
+        var T = parseInt(params_now.observation);
         scale_x.domain([0, T]);
-        for (var i=0; i<rep; ++i) {
-            var qt = q0;
-            var trajectory = [q0];
-            var repl_delay = rep * T / 5 + 600 * i / rep;
-            for (var t=1; t<=T; ++t) {
-                qt = random_binomial(N, (1 + s) * qt / (1 + s * qt)) / N;
-                trajectory.push(qt);
-            }
-            results.push(trajectory);
+        var qt = 1/2;
+        var trajectory = [qt];
+        var repl_delay = T / 5 + 600;
+        for (var t=1; t<=T; ++t) {
+            qt = random_binomial(N, qt) / N;
+            trajectory.push(qt);
         }
+        results.push(trajectory);
         return results;
     }
 
@@ -330,7 +342,6 @@
     d3.select(window).on("resize", update_width);
     d3.select("#start").on("click", function(){
         panel.selectAll("path").remove();
-        d3.selectAll("#fixation label.value").text(0);
         results = [];
         simulation();
         animation();

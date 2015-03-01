@@ -96,8 +96,6 @@ input {
 svg {
     vertical-align: top;
     height: 400px;
-    margin-right: -120px;
-    padding-right: 120px;
 }
 
 rect.panel_background {
@@ -119,4 +117,8 @@ path.domain {
 
 text {
     font-size: 110%;
+}
+
+#field {
+    margin: 0 0 12px 0;
 }

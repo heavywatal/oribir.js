@@ -1,0 +1,122 @@
+body {
+    margin: 0 10px 10px;
+    font-family: "Noto Sans", "Segoe UI", sans-serif;
+    font-size: 110%;
+    -webkit-text-size-adjust: 160%;
+}
+
+dl {
+    display: inline-block;
+    width: 270px;
+    margin: 0 12px 12px 0;
+    padding: 8px 12px;
+    background-color: #EEEEEE;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+       (min-resolution: 2dppx) {
+    dl {
+        width: 400px;
+    }
+}
+
+dt {
+    font-weight: bold;
+    max-height: 1ex;
+}
+
+dd {
+    margin-left: 0;
+}
+
+label {
+    display: inline-block;
+}
+
+label.name:after {
+    content: ":";
+}
+
+label.value {
+    float: right;
+    text-align: right;
+    color: #000000;
+    font-weight: bold;
+}
+
+label.min, label.max {
+    color: #999999;
+}
+
+label.max {
+    float: right;
+    text-align: right;
+}
+
+input {
+    width: 100%;
+    margin: 0;
+    font-size: inherit;
+}
+
+.button {
+    display: inline-block;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    padding: 8px 12px;
+    background-color: #666666;
+    color: #FFFFFF;
+    vertical-align: middle;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#start {
+    margin: 0 0 12px;
+    padding: 12px 16px;
+    font-size: 120%;
+    width: 100%;
+}
+
+#footer .button {
+    margin: 12px 4px;
+    background-color: #AAAAAA;
+    font-size: 80%;
+}
+
+#footer {
+    text-align: right;
+}
+
+#graph {
+    background-color: #EEEEEE;
+}
+
+svg {
+    vertical-align: top;
+    height: 400px;
+    margin-right: -120px;
+    padding-right: 120px;
+}
+
+rect.panel_background {
+    fill: #FFFFFF;
+}
+
+path {
+    fill: none;
+    stroke: #FF6000;
+    stroke-opacity: 0.3;
+    stroke-width: 3;
+}
+
+path.domain {
+    stroke: #000000;
+    stroke-opacity: 0.5;
+    stroke-width: 2;
+}
+
+text {
+    font-size: 110%;
+}

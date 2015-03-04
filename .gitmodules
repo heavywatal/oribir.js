@@ -5,3 +5,6 @@
 	path = x18n
 	url = https://github.com/heavywatal/x18n.git
 	branch = gitsubmodule_https
+[submodule "i18next"]
+	path = i18next
+	url = https://github.com/i18next/i18next.git

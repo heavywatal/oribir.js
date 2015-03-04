@@ -1,0 +1,17 @@
+{
+    "params": {
+        "oasis": "Environment",
+        "mu": "Mutation rate",
+        "popsize": "Population size",
+        "observation": "Observation period"
+    },
+    "axes": {
+        "time": "Time (generations)",
+        "distance": "Flight distance"
+    },
+    "footer": {
+        "download": "Download oribir.js",
+        "report": "Report a bug",
+        "develop": "Development site"
+    }
+}

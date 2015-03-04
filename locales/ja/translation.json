@@ -1,0 +1,17 @@
+{
+    "params": {
+        "oasis": "オアシス",
+        "mu": "突然変異率",
+        "popsize": "集団サイズ",
+        "observation": "観察期間"
+    },
+    "axes": {
+        "time": "時間 (世代数)",
+        "distance": "飛行距離"
+    },
+    "footer": {
+        "download": "oribir.jsをダウンロード",
+        "report": "不具合報告・提案",
+        "develop": "開発元"
+    }
+}

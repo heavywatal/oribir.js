@@ -5,6 +5,11 @@ body {
     -webkit-text-size-adjust: 160%;
 }
 
+#main {
+    max-width: 780px;
+    margin: 0 auto;
+}
+
 dl {
     display: inline-block;
     width: 270px;

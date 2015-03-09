@@ -8,20 +8,8 @@ i18n.init({
   shortcutFunction: 'defaultValue'
 }, function(t) {
 
-    var iin = new simulation.Individual('TEST');
-    iin.print();
-
-    function random_bernoulli(prob) {
-        return Math.random() < prob;
-    }
-
-    function random_binomial(size, prob) {
-        var cnt = 0;
-        for (var i=0; i<size; ++i) {
-            if (random_bernoulli(prob)) {++cnt;}
-        }
-        return cnt;
-    }
+    var pop = new simulation.Population(3);
+    pop.print();
 
     var params = [
         [t("params.oasis"),
@@ -267,7 +255,7 @@ i18n.init({
         var trajectory = [qt];
         var repl_delay = T / 5 + 600;
         for (var t=1; t<=T; ++t) {
-            qt = random_binomial(N, qt) / N;
+            qt = random.binomial(N, qt) / N;
             trajectory.push(qt);
         }
         results.push(trajectory);
@@ -318,7 +306,6 @@ i18n.init({
     d3.select("#start").on("click", function(){
         panel.selectAll("path").remove();
         results = [];
-        console.log(i18n.t("params.mu"));
         run(params_now);
         animation();
     });

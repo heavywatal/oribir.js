@@ -1,10 +1,13 @@
 /// <reference path="typings/d3/d3.d.ts" />
 /// <reference path="typings/i18next/i18next.d.ts" />
+/// <reference path="simulation.ts" />
 "use strict";
 i18n.init({
     //  fallbackLng: "en",
     shortcutFunction: 'defaultValue'
 }, function (t) {
+    var iin = new simulation.Individual('TEST');
+    iin.print();
     function random_bernoulli(prob) {
         return Math.random() < prob;
     }
@@ -160,7 +163,7 @@ i18n.init({
         x_axis_label.attr("transform", "translate(" + ((svg_width - svg_padding.left - svg_padding.right) / 2) + "," + (panel_height + 50) + ")");
         y_axis_label.attr("transform", "translate(-50," + panel_height / 2 + ")rotate(-90)");
     }
-    function simulation(params_now) {
+    function run(params_now) {
         var N = parseFloat(params_now.popsize);
         var T = parseInt(params_now.observation);
         scale_x.domain([0, T]);
@@ -205,7 +208,7 @@ i18n.init({
         panel.selectAll("path").remove();
         results = [];
         console.log(i18n.t("params.mu"));
-        simulation(params_now);
+        run(params_now);
         animation();
     });
 });

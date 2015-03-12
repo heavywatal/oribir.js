@@ -4,7 +4,7 @@
 "use strict";
 
 i18n.init({
-//  fallbackLng: "en",
+  resGetPath: 'locales/__ns__.__lng__.json',
   shortcutFunction: 'defaultValue'
 }, function(t) {
 

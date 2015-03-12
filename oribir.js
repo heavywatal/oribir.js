@@ -3,7 +3,7 @@
 /// <reference path="simulation.ts" />
 "use strict";
 i18n.init({
-    //  fallbackLng: "en",
+    resGetPath: 'locales/__ns__.__lng__.json',
     shortcutFunction: 'defaultValue'
 }, function (t) {
     var pop = new simulation.Population(3);

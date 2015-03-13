@@ -34,3 +34,6 @@ open: ${MAIN_JS}
 
 chrome: ${MAIN_JS}
 	open -a Google\ Chrome index.html --args --allow-file-access-from-files
+
+test: all
+	node simulation.js

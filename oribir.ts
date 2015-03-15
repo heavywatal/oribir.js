@@ -17,7 +17,7 @@ i18n.init({
         [t("params.mu") + " (<var>μ</var>)",
          "mu", 1e-3, 1e-1, 1e-3, 1e-2],
         [t("params.popsize") + " (<var>N</var>)",
-         "popsize", 100, 10000, 100, 1000],
+         "popsize", 100, 1000, 100, 100],
         [t("params.observation"),
          "observation", 50, 400, 50, 100]
     ];
@@ -100,7 +100,7 @@ i18n.init({
     var scale_x = d3.scale.linear()
             .domain([0, 100]);
     var scale_y = d3.scale.linear()
-            .domain([0, 1])
+            .domain([0, 15])
             .range([panel.attr("height"), 0]);
     var line = d3.svg.line()
             .x(function(d, i) {return scale_x(i);})
@@ -251,15 +251,19 @@ i18n.init({
         var N = parseFloat(params_now.popsize);
         var T = parseInt(params_now.observation);
         scale_x.domain([0, T]);
-        var qt = 1/2;
-        var trajectory = [qt];
-        var repl_delay = T / 5 + 600;
+        var pop = new simulation.Population(N);
+        var mean_history = [[], [], []];
+        var sd_history = [[], [], []];
         for (var t=1; t<=T; ++t) {
-            qt = random.binomial(N, qt) / N;
-            trajectory.push(qt);
+            pop.reproduce();
+            pop.survive();
+            var phenotypes = pop.snapshot();
+            for (var i=0; i<3; ++i) {
+                mean_history[i].push(d3.mean(phenotypes[i]));
+                //sd_history[i].push(Math.sqrt(d3.variance(phenotypes[i])));
+            }
         }
-        results.push(trajectory);
-        return results;
+        results.push(mean_history[0]);
     }
 
     function plot() {

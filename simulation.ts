@@ -44,7 +44,6 @@ export class Individual {
                         this._zygote[0].slice(2, 4).concat(
                         this._zygote[1].slice(2, 4)).reduce(sum) / 2];
         this._traits.push(15 + this._traits[1] - this._traits[0]);
-        this.print();
     }
     print() {
         console.log(this._zygote);
@@ -111,6 +110,18 @@ export class Population {
         this._members = survivors;
     }
 
+    snapshot(): number[][] {
+        var n = this._members.length;
+        var output = [[], [], []];
+        for (var i=0; i<n; ++i) {
+            var p = this._members[i].phenotype();
+            for (var j=0; j<3; ++j) {
+                output[j].push(p[j]);
+            }
+        }
+        return output;
+    }
+
     print() {
         console.log(this._members);
     }
@@ -127,5 +138,6 @@ export class Population {
     for (var t=0; t<3; ++t) {
         pop.reproduce();
         pop.survive();
+        console.log(pop.snapshot());
     }
 }})();

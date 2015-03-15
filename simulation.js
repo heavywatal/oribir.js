@@ -41,7 +41,6 @@ var simulation;
             this._fitness = 0;
             this._traits = [this._zygote[0].slice(0, 1).concat(this._zygote[1].slice(0, 1)).reduce(sum) / 2, this._zygote[0].slice(2, 4).concat(this._zygote[1].slice(2, 4)).reduce(sum) / 2];
             this._traits.push(15 + this._traits[1] - this._traits[0]);
-            this.print();
         }
         Individual.prototype.print = function () {
             console.log(this._zygote);
@@ -109,6 +108,17 @@ var simulation;
             }
             this._members = survivors;
         };
+        Population.prototype.snapshot = function () {
+            var n = this._members.length;
+            var output = [[], [], []];
+            for (var i = 0; i < n; ++i) {
+                var p = this._members[i].phenotype();
+                for (var j = 0; j < 3; ++j) {
+                    output[j].push(p[j]);
+                }
+            }
+            return output;
+        };
         Population.prototype.print = function () {
             console.log(this._members);
         };
@@ -126,6 +136,7 @@ var simulation;
         for (var t = 0; t < 3; ++t) {
             pop.reproduce();
             pop.survive();
+            console.log(pop.snapshot());
         }
     }
 })();

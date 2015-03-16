@@ -2,15 +2,13 @@
 /// <reference path="typings/i18next/i18next.d.ts" />
 /// <reference path="simulation.ts" />
 /// <reference path="graphics.ts" />
+/// <reference path="plot.ts" />
 "use strict";
 
 i18n.init({
   resGetPath: 'locales/__ns__.__lng__.json',
   shortcutFunction: 'defaultValue'
 }, function(t) {
-
-    var pop = new simulation.Population(3);
-    pop.print();
 
     var params = [
         [t("params.oasis"),
@@ -79,47 +77,6 @@ i18n.init({
         .attr("class", "button")
         .text("START!");
 
-    var svg_padding = {
-        top:    20,
-        right:  30,
-        bottom: 60,
-        left:   80
-    };
-
-    var svg = d3.select("#graph").append("svg");
-
-    var panel = svg.append("g")
-            .attr("class", "panel")
-            .attr("transform",
-                  "translate("+svg_padding.left+","+svg_padding.top+")")
-            .attr("height",
-                  parseInt(svg.style("height")) - svg_padding.top - svg_padding.bottom);
-    var panel_bg = panel.append("rect")
-            .attr("class", "panel_background")
-            .attr("height", panel.attr("height"));
-
-    var scale_x = d3.scale.linear()
-            .domain([0, 100]);
-    var scale_y = d3.scale.linear()
-            .domain([0, 15])
-            .range([panel.attr("height"), 0]);
-    var line = d3.svg.line()
-            .x(function(d, i) {return scale_x(i);})
-            .y(function(d, i) {return scale_y(d);})
-            .interpolate("linear");
-    var x_axis = d3.svg.axis()
-            .scale(scale_x)
-            .orient("bottom");
-    var y_axis = d3.svg.axis()
-            .scale(scale_y)
-            .orient("left");
-    var x_axis_label = panel.append("text")
-            .text(i18n.t("axes.time"))
-            .attr("text-anchor", "middle");
-    var y_axis_label = panel.append("text")
-            .text(i18n.t("axes.distance"))
-            .attr("text-anchor", 'middle');
-
     var field = d3.select("#field").append("svg")
             .attr("width", "100%")
             .attr("height", 400);
@@ -137,51 +94,13 @@ i18n.init({
         oribir.graphics.fly(bird);
     }
 
-    function update_width() {
-        var width = parseInt(d3.select("#graph").style("width"));
-        svg.attr("width", width);
-        var svg_width = parseInt(svg.attr("width"));
-        var panel_width = svg_width - svg_padding.left - svg_padding.right;
-        var panel_height = parseInt(panel.attr("height"));
-        panel_bg.attr("width", panel_width);
-        scale_x.range([0, panel_width]);
-        d3.select("#xaxis")
-            .attr("transform",
-                  "translate(0," + panel_height + ")")
-            .call(x_axis);
-        x_axis_label.attr("transform", "translate("+
-              ((svg_width - svg_padding.left - svg_padding.right) / 2)+","+
-              (panel_height + 50) +")");
-        panel.selectAll("path").remove();
-        plot();
-    }
-
-    function init_svg() {
-        update_width();
-        var svg_width = parseInt(svg.attr("width"));
-        var panel_width = svg_width - svg_padding.left - svg_padding.right;
-        var panel_height = parseInt(panel.attr("height"));
-
-        panel.append("g")
-            .attr("id", "xaxis")
-            .attr("transform",
-                  "translate(0," + panel.attr("height") + ")")
-            .call(x_axis);
-        panel.append("g")
-            .attr("id", "yaxis")
-            .call(y_axis);
-
-        x_axis_label.attr("transform", "translate("+
-              ((svg_width - svg_padding.left - svg_padding.right) / 2)+
-              ","+ (panel_height + 50) +")");
-        y_axis_label.attr("transform",
-              "translate(-50,"+ panel_height/2 +")rotate(-90)");
-    }
+    var plot_forewing = new oribir.plot.Plot(
+        "forewing", i18n.t("axes.time"), i18n.t("axes.distance"));
 
     function run(params_now) {
         var N = parseFloat(params_now.popsize);
         var T = parseInt(params_now.observation);
-        scale_x.domain([0, T]);
+        plot_forewing.domain([0, T]);
         var pop = new simulation.Population(N);
         var mean_history = [[], [], []];
         var sd_history = [[], [], []];
@@ -195,29 +114,6 @@ i18n.init({
             }
         }
         results.push(mean_history[0]);
-    }
-
-    function plot() {
-        var rep = results.length;
-        for (var i=0; i<rep; ++i) {
-            var trajectory = results[i];
-            panel.append("path").attr("d", line(trajectory));
-        }
-    }
-
-    function animation() {
-        var rep = results.length;
-        for (var i=0; i<rep; ++i) {
-            var trajectory = results[i];
-            var T = trajectory.length;
-            var repl_delay = rep * T / 5 + 600 * i / rep;
-            var path = panel.append("path");
-            for (var t=0; t<=T; ++t) {
-                var part = trajectory.slice(0, t);
-                path.transition().delay(repl_delay + 23 * t).ease("linear")
-                    .attr("d", line(part));
-            }
-        }
     }
 
     var footer = d3.select("#footer");
@@ -235,13 +131,12 @@ i18n.init({
         .text(i18n.t("footer.develop"));
 
     var results = [];
-    init_svg();
 
-    d3.select(window).on("resize", update_width);
+    d3.select(window).on("resize", plot_forewing.update_width);
     d3.select("#start").on("click", function(){
-        panel.selectAll("path").remove();
+        plot_forewing.clear();
         results = [];
         run(params_now);
-        animation();
+        plot_forewing.animation(results);
     });
 });

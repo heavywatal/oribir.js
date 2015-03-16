@@ -1,6 +1,6 @@
 ## Directories and Files
 MAIN_TS := oribir.ts
-MODULES_TS := simulation.ts graphics.ts
+MODULES_TS := simulation.ts graphics.ts plot.ts
 MAIN_DIST := index.html style.css README.md LICENSE.txt
 D3_DIST := $(addprefix d3/, d3.min.js README.md LICENSE)
 I18N_DIST := $(addprefix i18next/,i18next.min.js README.md license)

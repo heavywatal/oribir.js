@@ -77,18 +77,7 @@ i18n.init({
         .attr("class", "button")
         .text("START!");
 
-    var field = d3.select("#field").append("svg")
-            .attr("width", "100%")
-            .attr("height", 400);
-    field.append("rect")
-        .attr("width", "100%")
-        .attr("height", "100%")
-        .attr("fill", "#FF6600");
-
-    oribir.graphics.Oasis(field, 100, 100);
-    oribir.graphics.Oasis(field, 300, 300);
-    oribir.graphics.Oasis(field, 500, 200);
-
+    var field = oribir.graphics.Field();
     for (var i=0; i<3; ++i) {
         var bird = oribir.graphics.Bird(field);
         oribir.graphics.fly(bird);
@@ -101,19 +90,20 @@ i18n.init({
         var N = parseFloat(params_now.popsize);
         var T = parseInt(params_now.observation);
         plot_forewing.domain([0, T]);
+        plot_forewing.path_d([]);
         var pop = new simulation.Population(N);
         var mean_history = [[], [], []];
         var sd_history = [[], [], []];
-        for (var t=1; t<=T; ++t) {
-            pop.reproduce();
-            pop.survive();
+        for (var t=0; t<=T; ++t) {
             var phenotypes = pop.snapshot();
             for (var i=0; i<3; ++i) {
                 mean_history[i].push(d3.mean(phenotypes[i]));
                 //sd_history[i].push(Math.sqrt(d3.variance(phenotypes[i])));
             }
+            plot_forewing.path_d(mean_history[0], 10 * t);
+            pop.reproduce();
+            pop.survive();
         }
-        results.push(mean_history[0]);
     }
 
     var footer = d3.select("#footer");
@@ -130,13 +120,11 @@ i18n.init({
         .attr("href", "https://github.com/heavywatal/oribir.js")
         .text(i18n.t("footer.develop"));
 
-    var results = [];
-
-    d3.select(window).on("resize", plot_forewing.update_width);
+    function update_width() {
+        plot_forewing.update_width();
+    }
+    d3.select(window).on("resize", update_width);
     d3.select("#start").on("click", function(){
-        plot_forewing.clear();
-        results = [];
         run(params_now);
-        plot_forewing.animation(results);
     });
 });

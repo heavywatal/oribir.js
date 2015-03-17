@@ -77,4 +77,18 @@ module oribir.graphics {
             .attr("stroke-width", "6");
         oasis.attr("transform", "translate("+ x +","+ y +")");
     }
+
+    export function Field() {
+        var field = d3.select("#field").append("svg")
+            .attr("width", "100%")
+            .attr("height", 400);
+        field.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "#FF6600");
+        oribir.graphics.Oasis(field, 100, 100);
+        oribir.graphics.Oasis(field, 300, 300);
+        oribir.graphics.Oasis(field, 500, 200);
+        return field;
+    }
 }

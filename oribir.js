@@ -66,12 +66,18 @@ i18n.init({
         var bird = oribir.graphics.Bird(field);
         oribir.graphics.fly(bird);
     }
-    var plot_forewing = new oribir.plot.Plot("forewing", i18n.t("axes.time"), i18n.t("axes.distance"));
-    function run(params_now) {
-        var N = parseFloat(params_now.popsize);
-        var T = parseInt(params_now.observation);
+    var plot_forewing = new oribir.plot.Plot("forewing", params_now["observation"], 15, i18n.t("axes.time"), i18n.t("axes.forewing"));
+    var plot_hindwing = new oribir.plot.Plot("hindwing", params_now["observation"], 15, i18n.t("axes.time"), i18n.t("axes.hindwing"));
+    var plot_flight = new oribir.plot.Plot("flight", params_now["observation"], 31, i18n.t("axes.time"), i18n.t("axes.distance"));
+    function run() {
+        var N = parseFloat(params_now["popsize"]);
+        var T = parseInt(params_now["observation"]);
         plot_forewing.domain([0, T]);
+        plot_hindwing.domain([0, T]);
+        plot_flight.domain([0, T]);
         plot_forewing.path_d([]);
+        plot_hindwing.path_d([]);
+        plot_flight.path_d([]);
         var pop = new simulation.Population(N);
         var mean_history = [[], [], []];
         var sd_history = [[], [], []];
@@ -81,6 +87,8 @@ i18n.init({
                 mean_history[i].push(d3.mean(phenotypes[i]));
             }
             plot_forewing.path_d(mean_history[0], 10 * t);
+            plot_hindwing.path_d(mean_history[1], 10 * t);
+            plot_flight.path_d(mean_history[2], 10 * t);
             pop.reproduce();
             pop.survive();
         }
@@ -91,9 +99,9 @@ i18n.init({
     footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js").text(i18n.t("footer.develop"));
     function update_width() {
         plot_forewing.update_width();
+        plot_hindwing.update_width();
+        plot_flight.update_width();
     }
     d3.select(window).on("resize", update_width);
-    d3.select("#start").on("click", function () {
-        run(params_now);
-    });
+    d3.select("#start").on("click", run);
 });

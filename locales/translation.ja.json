@@ -7,6 +7,8 @@
     },
     "axes": {
         "time": "時間 (世代数)",
+        "forewing": "前羽",
+        "hindwing": "後羽",
         "distance": "飛行距離"
     },
     "footer": {

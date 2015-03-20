@@ -78,8 +78,8 @@ i18n.init({
 
     var field = oribir.graphics.Field();
     for (var i=0; i<3; ++i) {
-        var bird = oribir.graphics.Bird(field);
-        oribir.graphics.fly(bird);
+        var bird = new oribir.graphics.Bird(field);
+        bird.fly();
     }
 
     var plot_forewing = new oribir.plot.Plot(

@@ -63,8 +63,8 @@ i18n.init({
     d3.select("form").append("button").attr("type", "button").attr("id", "start").attr("class", "button").text("START!");
     var field = oribir.graphics.Field();
     for (var i = 0; i < 3; ++i) {
-        var bird = oribir.graphics.Bird(field);
-        oribir.graphics.fly(bird);
+        var bird = new oribir.graphics.Bird(field);
+        bird.fly();
     }
     var plot_forewing = new oribir.plot.Plot("forewing", params_now["observation"], 15, i18n.t("axes.time"), i18n.t("axes.forewing"));
     var plot_hindwing = new oribir.plot.Plot("hindwing", params_now["observation"], 15, i18n.t("axes.time"), i18n.t("axes.hindwing"));

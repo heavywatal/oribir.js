@@ -90,6 +90,9 @@ i18n.init({
             d3.selectAll(".param_range input").attr("disabled", true);
             start_button.attr("disabled", null);
             lock_button.text("Reset");
+            var N = parseInt(params_now["popsize"]);
+            population = new simulation.Population(N);
+            display_population();
         } else {  // reset
             d3.selectAll(".param_range input").attr("disabled", null);
             start_button.attr("disabled", true);
@@ -97,14 +100,17 @@ i18n.init({
             plot_forewing.path_d([]);
             plot_hindwing.path_d([]);
             plot_flight.path_d([]);
+            d3.selectAll("g.bird").remove();
         }
     }
     lock_button.on("click", toggle_form);
 
     var field = oribir.graphics.Field();
-    for (var i=0; i<3; ++i) {
-        var bird = new oribir.graphics.Bird(field);
-        bird.fly();
+    function display_population() {
+        for (var i=0; i<3; ++i) {
+            var bird = new oribir.graphics.Bird(field);
+            bird.fly();
+        }
     }
 
     var plot_forewing = new oribir.plot.Plot(
@@ -117,8 +123,8 @@ i18n.init({
         "flight", params_now["observation"], 31,
         i18n.t("axes.time"), i18n.t("axes.distance"));
 
+    var population;
     function run() {
-        var N = parseFloat(params_now["popsize"]);
         var T = parseInt(params_now["observation"]);
         plot_forewing.domain([0, T]);
         plot_hindwing.domain([0, T]);
@@ -127,11 +133,10 @@ i18n.init({
         plot_hindwing.path_d([]);
         plot_flight.path_d([]);
 
-        var pop = new simulation.Population(N);
         var mean_history = [[], [], []];
         var sd_history = [[], [], []];
         for (var t=0; t<=T; ++t) {
-            var phenotypes = pop.snapshot();
+            var phenotypes = population.snapshot();
             for (var i=0; i<3; ++i) {
                 mean_history[i].push(d3.mean(phenotypes[i]));
                 //sd_history[i].push(Math.sqrt(d3.variance(phenotypes[i])));
@@ -139,8 +144,8 @@ i18n.init({
             plot_forewing.path_d(mean_history[0], 10 * t);
             plot_hindwing.path_d(mean_history[1], 10 * t);
             plot_flight.path_d(mean_history[2], 10 * t);
-            pop.reproduce();
-            pop.survive();
+            population.reproduce();
+            population.survive();
         }
     }
     start_button.on("click", run);

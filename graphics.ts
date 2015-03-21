@@ -6,7 +6,7 @@ module oribir.graphics {
     export class Bird {
         private _g;
         constructor(field) {
-            this._g = field.append("g");
+            this._g = field.append("g").attr("class", "bird");
             this._g.append("rect")
                 .attr("width", 100)
                 .attr("height", 100)

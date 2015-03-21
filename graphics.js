@@ -6,7 +6,7 @@ var oribir;
     (function (graphics) {
         var Bird = (function () {
             function Bird(field) {
-                this._g = field.append("g");
+                this._g = field.append("g").attr("class", "bird");
                 this._g.append("rect").attr("width", 100).attr("height", 100).attr("fill", "none");
                 this._g.append("line").attr("x1", 5).attr("x2", 95).attr("y1", 90).attr("y2", 90).attr("stroke-width", 10).attr("stroke", "#000000");
                 this._g.append("line").attr("x1", 85).attr("x2", 95).attr("y1", 90).attr("y2", 90).attr("stroke-width", 10).attr("stroke", "#FFFF00");

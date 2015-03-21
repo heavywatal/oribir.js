@@ -60,7 +60,26 @@ i18n.init({
         input_items.select("#" + id + " label.value").text(value);
         params_now[id] = value;
     }
-    d3.select("form").append("button").attr("type", "button").attr("id", "start").attr("class", "button").text("START!");
+    var button_box = d3.select("form").append("div").attr("id", "button_box");
+    var lock_button = button_box.append("button").attr("type", "button").attr("id", "lock").attr("class", "controller").text("Lock Parameters");
+    var start_button = button_box.append("button").attr("type", "button").attr("id", "start").attr("class", "controller").attr("disabled", true).text("START!");
+    function toggle_form() {
+        var is_unlocked = start_button.attr("disabled");
+        if (is_unlocked) {
+            d3.selectAll(".param_range input").attr("disabled", true);
+            start_button.attr("disabled", null);
+            lock_button.text("Reset");
+        }
+        else {
+            d3.selectAll(".param_range input").attr("disabled", null);
+            start_button.attr("disabled", true);
+            lock_button.text("Lock");
+            plot_forewing.path_d([]);
+            plot_hindwing.path_d([]);
+            plot_flight.path_d([]);
+        }
+    }
+    lock_button.on("click", toggle_form);
     var field = oribir.graphics.Field();
     for (var i = 0; i < 3; ++i) {
         var bird = new oribir.graphics.Bird(field);
@@ -93,15 +112,15 @@ i18n.init({
             pop.survive();
         }
     }
-    var footer = d3.select("#footer");
-    footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js/releases/latest").text(i18n.t("footer.download"));
-    footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js/issues").text(i18n.t("footer.report"));
-    footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js").text(i18n.t("footer.develop"));
+    start_button.on("click", run);
     function update_width() {
         plot_forewing.update_width();
         plot_hindwing.update_width();
         plot_flight.update_width();
     }
     d3.select(window).on("resize", update_width);
-    d3.select("#start").on("click", run);
+    var footer = d3.select("#footer");
+    footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js/releases/latest").text(i18n.t("footer.download"));
+    footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js/issues").text(i18n.t("footer.report"));
+    footer.append("a").attr("class", "button").attr("href", "https://github.com/heavywatal/oribir.js").text(i18n.t("footer.develop"));
 });

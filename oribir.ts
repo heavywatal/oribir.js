@@ -91,8 +91,8 @@ i18n.init({
             start_button.attr('disabled', null);
             lock_button.text('Reset');
             var N = parseInt(params_now['popsize']);
-            population = new simulation.Population(N);
-            display_population();
+            population = new oribir.simulation.Population(N);
+            display_population(population.snapshot());
         } else {  // reset
             d3.selectAll('.param_range input').attr('disabled', null);
             start_button.attr('disabled', true);
@@ -106,9 +106,18 @@ i18n.init({
     lock_button.on('click', toggle_form);
 
     var field = oribir.graphics.Field();
-    function display_population() {
-        for (var i=0; i<3; ++i) {
-            var bird = new oribir.graphics.Bird(field);
+    function display_population(snapshot) {
+        d3.selectAll('g.bird').remove();
+        var n_samples = 3;
+        var range = oribir.util.range(population.size);
+        var indices = oribir.random.sample(range, n_samples);
+        for (var i=0; i<n_samples; ++i) {
+            var idx = indices[i];
+            var bird = new oribir.graphics.Bird(field,
+                                                snapshot[0][idx],
+                                                snapshot[1][idx],
+                                                snapshot[2][idx],
+                                                idx);
             bird.fly();
         }
     }
@@ -137,6 +146,7 @@ i18n.init({
         var sd_history = [[], [], []];
         for (var t=0; t<=T; ++t) {
             var phenotypes = population.snapshot();
+            display_population(phenotypes);
             for (var i=0; i<3; ++i) {
                 mean_history[i].push(d3.mean(phenotypes[i]));
                 //sd_history[i].push(Math.sqrt(d3.variance(phenotypes[i])));

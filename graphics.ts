@@ -5,8 +5,14 @@ module oribir.graphics {
 
     export class Bird {
         private _g;
-        constructor(field) {
-            this._g = field.append('g').attr('class', 'bird');
+        constructor(field,
+                    forewing: number,
+                    hindwing: number,
+                    flight: number,
+                    private _id: number=0) {
+            this._g = field.append('g')
+                .attr('class', 'bird')
+                .attr('flight', flight * 7);
             this._g.append('rect')
                 .attr('width', 100)
                 .attr('height', 100)
@@ -22,19 +28,19 @@ module oribir.graphics {
                 .attr('stroke-width', 10)
                 .attr('stroke', '#FFFF00');
             this._g.append('ellipse')
-                .attr('rx', 10).attr('ry', 20)
-                .attr('cx', 60).attr('cy', 70)
+                .attr('rx', 10).attr('ry', forewing * 2.5)
+                .attr('cx', 60).attr('cy', 90 - forewing * 2.5)
                 .attr('fill', 'none')
                 .attr('stroke', '#000000')
                 .attr('stroke-width', 10);
             this._g.append('ellipse')
-                .attr('rx', 10).attr('ry', 20)
-                .attr('cx', 25).attr('cy', 70)
+                .attr('rx', 10).attr('ry', hindwing * 2.5)
+                .attr('cx', 25).attr('cy', 90 - hindwing * 2.5)
                 .attr('fill', 'none')
                 .attr('stroke', '#000000')
                 .attr('stroke-width', 10);
             var x = Math.random() * parseInt(field.style('width'));
-            var y = Math.random() * parseInt(field.style('height'));
+            var y = Math.random() * (parseInt(field.style('height')) - 100);
             this._g.attr('transform', 'translate('+ x +','+ y +')');
         }
 
@@ -44,7 +50,7 @@ module oribir.graphics {
             var t = 1000 * Math.random();
             var x = d3.transform(obj.attr('transform')).translate[0];
             var y = d3.transform(obj.attr('transform')).translate[1];
-            var distance = 100;
+            var distance = parseFloat(obj.attr('flight'));
             for (var i=1; i<=num_steps; ++i) {
                 var prop = i / num_steps;
                 var dx = 0.5 * distance * (1 - Math.cos(Math.PI * prop));

@@ -1,4 +1,18 @@
-module random {
+module oribir.util {
+    export function range(start, stop=null) {
+        var result = []
+        if (stop == null) {
+            stop = start;
+            start = 0;
+        }
+        for (; start<stop; ++start) {
+            result.push(start);
+        }
+        return result;
+    }
+}
+
+module oribir.random {
     export function randrange(start, stop=null) {
         if (stop == null) {
             return Math.floor(Math.random() * start);
@@ -22,9 +36,20 @@ module random {
         }
         return cnt;
     }
+
+    export function sample(array, k: number) {
+        var n = array.length;
+        var result = [];
+        for (var i=0; i<k; ++i) {
+            var j = randrange(n - i);
+            result.push(array[j]);
+            array[j] = array[n - i - 1];
+        }
+        return result;
+    }
 }
 
-module simulation {
+module oribir.simulation {
 
 var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]]
 
@@ -122,6 +147,8 @@ export class Population {
         return output;
     }
 
+    get size(): number {return this._members.length;}
+
     print() {
         console.log(this._members);
     }
@@ -133,11 +160,12 @@ export class Population {
 }
 
 (function () {if (typeof window == 'undefined') {
-    var pop = new simulation.Population(4);
+    var pop = new oribir.simulation.Population(4);
     pop.test();
     for (var t=0; t<3; ++t) {
         pop.reproduce();
         pop.survive();
         console.log(pop.snapshot());
     }
+    console.log(oribir.random.sample(oribir.util.range(6), 3));
 }})();

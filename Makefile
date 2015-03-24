@@ -20,7 +20,7 @@ all: ${MAIN_JS}
 	@:
 
 ${MAIN_JS}: ${MAIN_TS} ${MODULES_TS}
-	tsc $<
+	tsc --target ES5 $<
 
 clean:
 	$(RM) *.tar.gz *.zip

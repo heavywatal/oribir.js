@@ -29,11 +29,18 @@ dist: ${MAIN_JS}
 	tar -C .. -czf $(PACKAGE)-$(VERSION).tar.gz $(DISTFILES)
 	cd .. && zip $(PACKAGE)/$(PACKAGE)-$(VERSION).zip $(DISTFILES)
 
-open: ${MAIN_JS}
-	open index.html
+open:
+	git status
+	open http://heavywatal.github.io/oribir.js/
+
+safari: ${MAIN_JS}
+	open -a Safari index.html
 
 chrome: ${MAIN_JS}
 	open -a Google\ Chrome index.html --args --allow-file-access-from-files
+
+firefox: ${MAIN_JS}
+	open -a Firefox index.html
 
 test: all
 	node simulation.js

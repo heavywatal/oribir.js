@@ -15,12 +15,26 @@ var oribir;
             return result;
         }
         util.range = range;
+        function partial_sums(array) {
+            var s = 0;
+            var result = [];
+            for (var i = 0; i < array.length; ++i) {
+                s += array[i];
+                result.push(s);
+            }
+            return result;
+        }
+        util.partial_sums = partial_sums;
     })(util = oribir.util || (oribir.util = {}));
 })(oribir || (oribir = {}));
 var oribir;
 (function (oribir) {
     var random;
     (function (random) {
+        function uniform(min, max) {
+            return min + (max - min) * Math.random();
+        }
+        random.uniform = uniform;
         function randrange(start, stop) {
             if (stop === void 0) { stop = null; }
             if (stop == null) {
@@ -73,24 +87,27 @@ var oribir;
             function Individual(_zygote) {
                 if (_zygote === void 0) { _zygote = [[8, 0, 8, 0], [8, 0, 8, 0]]; }
                 this._zygote = _zygote;
-                this._fitness = 0;
                 this._traits = [this._zygote[0].slice(0, 1).concat(this._zygote[1].slice(0, 1)).reduce(sum) / 2, this._zygote[0].slice(2, 4).concat(this._zygote[1].slice(2, 4)).reduce(sum) / 2];
                 this._traits.push(15 + this._traits[1] - this._traits[0]);
             }
             Individual.prototype.print = function () {
                 console.log(this._zygote);
-                console.log(this.phenotype());
-                console.log(this.fitness());
+                console.log(this.phenotype);
             };
-            Individual.prototype.fitness = function () {
-                return this._fitness;
-            };
-            Individual.prototype.phenotype = function () {
-                return this._traits;
-            };
-            Individual.prototype.fight = function () {
-                this._fitness = this._traits[2] / 31;
-            };
+            Object.defineProperty(Individual.prototype, "flight", {
+                get: function () {
+                    return this._traits[2];
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(Individual.prototype, "phenotype", {
+                get: function () {
+                    return this._traits;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Individual.prototype.copulate = function (partner) {
                 if (false) {
                     return [];
@@ -117,12 +134,19 @@ var oribir;
         })();
         simulation.Individual = Individual;
         var Population = (function () {
-            function Population(_size) {
+            function Population(_size, environment) {
+                if (environment === void 0) { environment = '1'; }
                 this._size = _size;
                 this._members = [];
                 for (var i = 0; i < this._size; ++i) {
                     this._members.push(new Individual());
                 }
+                var sigma = 0.5;
+                var coef = -0.5 / Math.pow(sigma, 2);
+                this._landscape = function (flight) {
+                    var base = flight / 31.0 - Population._OPTIMA[environment];
+                    return Math.exp(coef * Math.pow(base, 2));
+                };
             }
             Population.prototype.reproduce = function () {
                 var half = Math.floor(this._members.length / 2);
@@ -134,12 +158,14 @@ var oribir;
                 this._members = offsprings;
             };
             Population.prototype.survive = function () {
+                var fitness_values = [];
                 for (var i = 0; i < this._members.length; ++i) {
-                    this._members[i].fight();
+                    fitness_values.push(this._landscape(this._members[i].flight));
                 }
+                var indices = roulette(fitness_values, this._size);
                 var survivors = [];
-                for (var i = 0; i < this._size; ++i) {
-                    survivors.push(this._members[oribir.random.randrange(this._size)]);
+                for (var i = 0; i < indices.length; ++i) {
+                    survivors.push(this._members[i]);
                 }
                 this._members = survivors;
             };
@@ -147,7 +173,7 @@ var oribir;
                 var n = this._members.length;
                 var output = [[], [], []];
                 for (var i = 0; i < n; ++i) {
-                    var p = this._members[i].phenotype();
+                    var p = this._members[i].phenotype;
                     for (var j = 0; j < 3; ++j) {
                         output[j].push(p[j]);
                     }
@@ -167,20 +193,50 @@ var oribir;
             Population.prototype.test = function () {
                 var ind = this._members[0];
             };
+            Population._OPTIMA = {
+                '0': 0.03,
+                '1': 0.50,
+                '2': 0.97,
+            };
             return Population;
         })();
         simulation.Population = Population;
+        function roulette(fitness, n) {
+            if (n === void 0) { n = null; }
+            if (n === null) {
+                n = fitness.length;
+            }
+            var bounds = oribir.util.partial_sums(fitness);
+            var total_fitness = bounds[bounds.length - 1];
+            var indices = [];
+            for (var i = 0; i < n; ++i) {
+                var dart = oribir.random.uniform(0, total_fitness);
+                for (var j = 0; j < bounds.length; ++j) {
+                    if (dart < bounds[j]) {
+                        indices.push(j);
+                        break;
+                    }
+                }
+            }
+            console.log(fitness);
+            console.log(indices);
+            return indices;
+        }
+        simulation.roulette = roulette;
     })(simulation = oribir.simulation || (oribir.simulation = {}));
 })(oribir || (oribir = {}));
 (function () {
     if (typeof window == 'undefined') {
         var pop = new oribir.simulation.Population(4);
         pop.test();
-        for (var t = 0; t < 3; ++t) {
+        for (var t = 0; t < 4; ++t) {
             pop.reproduce();
             pop.survive();
             console.log(pop.snapshot());
         }
-        console.log(oribir.random.sample(oribir.util.range(6), 3));
+        var die = oribir.util.range(1, 7);
+        console.log(oribir.random.sample(die, 3));
+        console.log(oribir.util.partial_sums(die));
+        console.log(oribir.simulation.roulette(die, 10));
     }
 })();

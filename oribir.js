@@ -9,7 +9,7 @@ i18n.init({
     shortcutFunction: 'defaultValue'
 }, function (t) {
     var params = [
-        [t('params.oasis'), 'oasis', 1, 3, 1, 2],
+        [t('params.oasis'), 'oasis', 0, 2, 1, 1],
         [t('params.mu') + ' (<var>μ</var>)', 'mu', 1e-3, 1e-1, 1e-3, 1e-2],
         [t('params.popsize') + ' (<var>N</var>)', 'popsize', 100, 1000, 100, 100],
         [t('params.observation'), 'observation', 50, 400, 50, 100]
@@ -70,7 +70,7 @@ i18n.init({
             start_button.attr('disabled', null);
             lock_button.text('Reset');
             var N = parseInt(params_now['popsize']);
-            population = new oribir.simulation.Population(N);
+            population = new oribir.simulation.Population(N, params_now['oasis']);
             display_population(population.snapshot());
         }
         else {

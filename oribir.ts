@@ -12,7 +12,7 @@ i18n.init({
 
     var params = [
         [t('params.oasis'),
-         'oasis', 1, 3, 1, 2],
+         'oasis', 0, 2, 1, 1],
         [t('params.mu') + ' (<var>μ</var>)',
          'mu', 1e-3, 1e-1, 1e-3, 1e-2],
         [t('params.popsize') + ' (<var>N</var>)',
@@ -91,7 +91,7 @@ i18n.init({
             start_button.attr('disabled', null);
             lock_button.text('Reset');
             var N = parseInt(params_now['popsize']);
-            population = new oribir.simulation.Population(N);
+            population = new oribir.simulation.Population(N, params_now['oasis']);
             display_population(population.snapshot());
         } else {  // reset
             d3.selectAll('.param_range input').attr('disabled', null);

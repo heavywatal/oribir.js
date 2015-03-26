@@ -86,7 +86,7 @@ i18n.init({
     lock_button.on('click', toggle_form);
     var field = oribir.graphics.Field();
     function display_population(snapshot) {
-        d3.selectAll('g.bird').remove();
+        d3.selectAll('g.bird').transition().remove();
         var n_samples = 3;
         var range = oribir.util.range(population.size);
         var indices = oribir.random.sample(range, n_samples);

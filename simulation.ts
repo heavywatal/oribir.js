@@ -195,8 +195,8 @@ export class Population {
                 }
             }
         }
-        console.log(fitness);
-        console.log(indices);
+//        console.log(fitness);
+//        console.log(indices);
         return indices;
     }
 }

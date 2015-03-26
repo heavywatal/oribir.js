@@ -218,8 +218,8 @@ var oribir;
                     }
                 }
             }
-            console.log(fitness);
-            console.log(indices);
+            //        console.log(fitness);
+            //        console.log(indices);
             return indices;
         }
         simulation.roulette = roulette;

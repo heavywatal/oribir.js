@@ -63,7 +63,7 @@ module oribir.random {
     }
 }
 
-module oribir.simulation {
+module oribir {
 
 var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]]
 
@@ -72,7 +72,10 @@ function sum(lhs, rhs) {return lhs + rhs;}
 export class Individual {
     private _traits: number[];
 
-    static mutation_rate: number = 0.1 * 4 / 3;
+    static _MUTATION_RATE: number = 0.1 * 4 / 3;
+    static set MUTATION_RATE(mu: number) {
+        this._MUTATION_RATE = mu * 4 / 3;
+    }
 
     constructor(
         private _zygote: number[][] = [[8, 0, 8, 0], [8, 0, 8, 0]]
@@ -101,7 +104,7 @@ export class Individual {
         for (var i=0; i<4; ++i) {
             gamete.push(this._zygote[random.randrange(2)][i]);
         }
-        if (random.bernoulli(Individual.mutation_rate)) {
+        if (random.bernoulli(Individual._MUTATION_RATE)) {
             var locus = random.randrange(gamete.length);
             gamete[locus] = random.randrange(4) * (4 - 3 * (locus % 2));
         }
@@ -113,9 +116,9 @@ export class Population {
     private _members: Individual[];
     private _landscape;
     static _OPTIMA = {
-        '0': 0.03,
+        '0': 0.97,
         '1': 0.50,
-        '2': 0.97,
+        '2': 0.03,
     };
 
     constructor(private _size: number, environment='1') {
@@ -199,16 +202,16 @@ export class Population {
 }
 
 (function () {if (typeof window == 'undefined') {
+    var die = oribir.util.range(1, 7);
     console.log(oribir.random.sample(die, 3));
     console.log(oribir.util.partial_sums(die));
-    console.log(oribir.simulation.roulette(die, 10));
+    console.log(oribir.roulette(die, 10));
 
-    var pop = new oribir.simulation.Population(4, '2');
+    var pop = new oribir.Population(4, '2');
     pop.test();
     for (var t=0; t<4; ++t) {
         pop.reproduce();
         pop.survive();
         console.log(pop.snapshot());
     }
-    var die = oribir.util.range(1, 7);
 }})();

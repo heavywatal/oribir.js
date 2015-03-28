@@ -12,7 +12,7 @@ i18n.init({
 
     var params = [
         [t('params.oasis'),
-         'oasis', 0, 2, 1, 1],
+         'oasis', 0, 2, 1, 0],
         [t('params.mu') + ' (<var>μ</var>)',
          'mu', 1e-3, 1e-1, 1e-3, 1e-2],
         [t('params.popsize') + ' (<var>N</var>)',
@@ -90,8 +90,9 @@ i18n.init({
             d3.selectAll('.param_range input').attr('disabled', true);
             start_button.attr('disabled', null);
             lock_button.text('Reset');
+            oribir.Individual.MUTATION_RATE = params_now['mu'];
             var N = parseInt(params_now['popsize']);
-            population = new oribir.simulation.Population(N, params_now['oasis']);
+            population = new oribir.Population(N, params_now['oasis']);
             display_population(population.snapshot());
         } else {  // reset
             d3.selectAll('.param_range input').attr('disabled', null);

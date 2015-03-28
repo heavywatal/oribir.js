@@ -90,10 +90,6 @@ var oribir;
                 this._traits = [this._zygote[0].slice(0, 1).concat(this._zygote[1].slice(0, 1)).reduce(sum) / 2, this._zygote[0].slice(2, 4).concat(this._zygote[1].slice(2, 4)).reduce(sum) / 2];
                 this._traits.push(15 + this._traits[1] - this._traits[0]);
             }
-            Individual.prototype.print = function () {
-                console.log(this._zygote);
-                console.log(this.phenotype);
-            };
             Object.defineProperty(Individual.prototype, "flight", {
                 get: function () {
                     return this._traits[2];
@@ -165,7 +161,7 @@ var oribir;
                 var indices = roulette(fitness_values, this._size);
                 var survivors = [];
                 for (var i = 0; i < indices.length; ++i) {
-                    survivors.push(this._members[i]);
+                    survivors.push(this._members[indices[i]]);
                 }
                 this._members = survivors;
             };
@@ -227,7 +223,10 @@ var oribir;
 })(oribir || (oribir = {}));
 (function () {
     if (typeof window == 'undefined') {
-        var pop = new oribir.simulation.Population(4);
+        console.log(oribir.random.sample(die, 3));
+        console.log(oribir.util.partial_sums(die));
+        console.log(oribir.simulation.roulette(die, 10));
+        var pop = new oribir.simulation.Population(4, '2');
         pop.test();
         for (var t = 0; t < 4; ++t) {
             pop.reproduce();
@@ -235,8 +234,5 @@ var oribir;
             console.log(pop.snapshot());
         }
         var die = oribir.util.range(1, 7);
-        console.log(oribir.random.sample(die, 3));
-        console.log(oribir.util.partial_sums(die));
-        console.log(oribir.simulation.roulette(die, 10));
     }
 })();

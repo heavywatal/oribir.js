@@ -83,10 +83,7 @@ export class Individual {
                         this._zygote[1].slice(2, 4)).reduce(sum) / 2];
         this._traits.push(15 + this._traits[1] - this._traits[0]);
     }
-    print() {
-        console.log(this._zygote);
-        console.log(this.phenotype);
-    }
+
     get flight(): number {return this._traits[2];}
     get phenotype(): number[] {return this._traits;}
 
@@ -152,7 +149,7 @@ export class Population {
         var indices = roulette(fitness_values, this._size);
         var survivors = [];
         for (var i=0; i<indices.length; ++i) {
-            survivors.push(this._members[i]);
+            survivors.push(this._members[indices[i]]);
         }
         this._members = survivors;
     }
@@ -202,7 +199,11 @@ export class Population {
 }
 
 (function () {if (typeof window == 'undefined') {
-    var pop = new oribir.simulation.Population(4);
+    console.log(oribir.random.sample(die, 3));
+    console.log(oribir.util.partial_sums(die));
+    console.log(oribir.simulation.roulette(die, 10));
+
+    var pop = new oribir.simulation.Population(4, '2');
     pop.test();
     for (var t=0; t<4; ++t) {
         pop.reproduce();
@@ -210,7 +211,4 @@ export class Population {
         console.log(pop.snapshot());
     }
     var die = oribir.util.range(1, 7);
-    console.log(oribir.random.sample(die, 3));
-    console.log(oribir.util.partial_sums(die));
-    console.log(oribir.simulation.roulette(die, 10));
 }})();

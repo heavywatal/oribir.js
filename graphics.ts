@@ -12,7 +12,7 @@ module oribir.graphics {
                     private _id: number=0) {
             this._g = field.append('g')
                 .attr('class', 'bird')
-                .attr('flight', flight * 7);
+                .attr('flight', flight * 8);
             this._g.append('rect')
                 .attr('width', 100)
                 .attr('height', 100)
@@ -28,14 +28,14 @@ module oribir.graphics {
                 .attr('stroke-width', 10)
                 .attr('stroke', '#FFFF00');
             this._g.append('ellipse')
-                .attr('rx', 10).attr('ry', forewing * 2.5)
-                .attr('cx', 60).attr('cy', 90 - forewing * 2.5)
+                .attr('rx', 10).attr('ry', forewing * 3)
+                .attr('cx', 60).attr('cy', 90 - forewing * 3)
                 .attr('fill', 'none')
                 .attr('stroke', '#000000')
                 .attr('stroke-width', 10);
             this._g.append('ellipse')
-                .attr('rx', 10).attr('ry', hindwing * 2.5)
-                .attr('cx', 25).attr('cy', 90 - hindwing * 2.5)
+                .attr('rx', 10).attr('ry', hindwing * 3)
+                .attr('cx', 25).attr('cy', 90 - hindwing * 3)
                 .attr('fill', 'none')
                 .attr('stroke', '#000000')
                 .attr('stroke-width', 10);

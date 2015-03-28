@@ -65,7 +65,8 @@ module oribir.random {
 
 module oribir {
 
-var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]]
+var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]];
+var initial_gamete = [2, 1, 2, 1, 2, 1, 2, 1];
 
 function sum(lhs, rhs) {return lhs + rhs;}
 
@@ -77,14 +78,18 @@ export class Individual {
         this._MUTATION_RATE = mu * 4 / 3;
     }
 
+    static get MAX_WING(): number {return 12;}
+    static get MAX_FLIGHT(): number {return 24;}
+
     constructor(
-        private _zygote: number[][] = [[8, 0, 8, 0], [8, 0, 8, 0]]
-    ) {
-        this._traits = [this._zygote[0].slice(0, 1).concat(
-                        this._zygote[1].slice(0, 1)).reduce(sum) / 2,
-                        this._zygote[0].slice(2, 4).concat(
-                        this._zygote[1].slice(2, 4)).reduce(sum) / 2];
-        this._traits.push(15 + this._traits[1] - this._traits[0]);
+        private _zygote: number[][] = [initial_gamete, initial_gamete]
+    ) {console.log(this._zygote);
+        this._traits = [this._zygote[0].slice(0, 4).concat(
+                        this._zygote[1].slice(0, 4)).reduce(sum) / 2,
+                        this._zygote[0].slice(4, 8).concat(
+                        this._zygote[1].slice(4, 8)).reduce(sum) / 2];
+        this._traits.push(Individual.MAX_FLIGHT / 2 +
+                          this._traits[1] - this._traits[0]);
     }
 
     get flight(): number {return this._traits[2];}
@@ -101,12 +106,13 @@ export class Individual {
 
     gametogenesis(): number[] {
         var gamete = [];
-        for (var i=0; i<4; ++i) {
-            gamete.push(this._zygote[random.randrange(2)][i]);
-        }
-        if (random.bernoulli(Individual._MUTATION_RATE)) {
-            var locus = random.randrange(gamete.length);
-            gamete[locus] = random.randrange(4) * (4 - 3 * (locus % 2));
+        for (var i=0; i<initial_gamete.length; ++i) {
+            if (random.bernoulli(Individual._MUTATION_RATE)) {
+                gamete.push(random.randrange(4));
+                // 1/4 remains the same -> correction in mu setter
+            } else {
+                gamete.push(this._zygote[random.randrange(2)][i]);
+            }
         }
         return gamete;
     }
@@ -129,7 +135,7 @@ export class Population {
         var sigma = 0.5;
         var coef = -0.5 / Math.pow(sigma, 2);
         this._landscape = function(flight) {
-            var base = flight/31.0 - Population._OPTIMA[environment];
+            var base = flight/Individual.MAX_FLIGHT - Population._OPTIMA[environment];
             return Math.exp(coef * Math.pow(base, 2));
         };
     }

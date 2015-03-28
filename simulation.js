@@ -78,19 +78,35 @@ var oribir;
 var oribir;
 (function (oribir) {
     var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]];
+    var initial_gamete = [2, 1, 2, 1, 2, 1, 2, 1];
     function sum(lhs, rhs) {
         return lhs + rhs;
     }
     var Individual = (function () {
         function Individual(_zygote) {
-            if (_zygote === void 0) { _zygote = [[8, 0, 8, 0], [8, 0, 8, 0]]; }
+            if (_zygote === void 0) { _zygote = [initial_gamete, initial_gamete]; }
             this._zygote = _zygote;
-            this._traits = [this._zygote[0].slice(0, 1).concat(this._zygote[1].slice(0, 1)).reduce(sum) / 2, this._zygote[0].slice(2, 4).concat(this._zygote[1].slice(2, 4)).reduce(sum) / 2];
-            this._traits.push(15 + this._traits[1] - this._traits[0]);
+            console.log(this._zygote);
+            this._traits = [this._zygote[0].slice(0, 4).concat(this._zygote[1].slice(0, 4)).reduce(sum) / 2, this._zygote[0].slice(4, 8).concat(this._zygote[1].slice(4, 8)).reduce(sum) / 2];
+            this._traits.push(Individual.MAX_FLIGHT / 2 + this._traits[1] - this._traits[0]);
         }
         Object.defineProperty(Individual, "MUTATION_RATE", {
             set: function (mu) {
                 this._MUTATION_RATE = mu * 4 / 3;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Individual, "MAX_WING", {
+            get: function () {
+                return 12;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Individual, "MAX_FLIGHT", {
+            get: function () {
+                return 24;
             },
             enumerable: true,
             configurable: true
@@ -121,12 +137,13 @@ var oribir;
         };
         Individual.prototype.gametogenesis = function () {
             var gamete = [];
-            for (var i = 0; i < 4; ++i) {
-                gamete.push(this._zygote[oribir.random.randrange(2)][i]);
-            }
-            if (oribir.random.bernoulli(Individual._MUTATION_RATE)) {
-                var locus = oribir.random.randrange(gamete.length);
-                gamete[locus] = oribir.random.randrange(4) * (4 - 3 * (locus % 2));
+            for (var i = 0; i < initial_gamete.length; ++i) {
+                if (oribir.random.bernoulli(Individual._MUTATION_RATE)) {
+                    gamete.push(oribir.random.randrange(4));
+                }
+                else {
+                    gamete.push(this._zygote[oribir.random.randrange(2)][i]);
+                }
             }
             return gamete;
         };
@@ -145,7 +162,7 @@ var oribir;
             var sigma = 0.5;
             var coef = -0.5 / Math.pow(sigma, 2);
             this._landscape = function (flight) {
-                var base = flight / 31.0 - Population._OPTIMA[environment];
+                var base = flight / Individual.MAX_FLIGHT - Population._OPTIMA[environment];
                 return Math.exp(coef * Math.pow(base, 2));
             };
         }

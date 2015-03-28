@@ -125,13 +125,13 @@ i18n.init({
     }
 
     var plot_forewing = new oribir.plot.Plot(
-        'forewing', params_now['observation'], 15,
+        'forewing', params_now['observation'], oribir.Individual.MAX_WING,
         i18n.t('axes.time'), i18n.t('axes.forewing'));
     var plot_hindwing = new oribir.plot.Plot(
-        'hindwing', params_now['observation'], 15,
+        'hindwing', params_now['observation'], oribir.Individual.MAX_WING,
         i18n.t('axes.time'), i18n.t('axes.hindwing'));
     var plot_flight = new oribir.plot.Plot(
-        'flight', params_now['observation'], 31,
+        'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT,
         i18n.t('axes.time'), i18n.t('axes.distance'));
 
     var population;

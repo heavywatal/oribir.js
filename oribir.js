@@ -96,6 +96,9 @@ i18n.init({
             var bird = new oribir.graphics.Bird(field, snapshot[0][idx], snapshot[1][idx], snapshot[2][idx], idx);
             bird.fly();
         }
+        d3.selectAll('g.bird').on('click', function () {
+            console.log(this);
+        });
     }
     var plot_forewing = new oribir.plot.Plot('forewing', params_now['observation'], 15, i18n.t('axes.time'), i18n.t('axes.forewing'));
     var plot_hindwing = new oribir.plot.Plot('hindwing', params_now['observation'], 15, i18n.t('axes.time'), i18n.t('axes.hindwing'));

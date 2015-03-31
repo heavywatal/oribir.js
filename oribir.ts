@@ -121,6 +121,9 @@ i18n.init({
                                                 idx);
             bird.fly();
         }
+        d3.selectAll('g.bird').on('click', function() {
+            console.log(this);
+        });
     }
 
     var plot_forewing = new oribir.plot.Plot(

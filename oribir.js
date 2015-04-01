@@ -9,7 +9,7 @@ i18n.init({
     shortcutFunction: 'defaultValue'
 }, function (t) {
     var params = [
-        [t('params.oasis'), 'oasis', 0, 2, 1, 1],
+        [t('params.oasis'), 'oasis', 0, 2, 1, 0],
         [t('params.mu') + ' (<var>μ</var>)', 'mu', 1e-3, 1e-1, 1e-3, 1e-2],
         [t('params.popsize') + ' (<var>N</var>)', 'popsize', 100, 1000, 100, 100],
         [t('params.observation'), 'observation', 50, 400, 50, 100]
@@ -69,8 +69,9 @@ i18n.init({
             d3.selectAll('.param_range input').attr('disabled', true);
             start_button.attr('disabled', null);
             lock_button.text('Reset');
+            oribir.Individual.MUTATION_RATE = params_now['mu'];
             var N = parseInt(params_now['popsize']);
-            population = new oribir.simulation.Population(N, params_now['oasis']);
+            population = new oribir.Population(N, params_now['oasis']);
             display_population(population.snapshot());
         }
         else {
@@ -100,9 +101,9 @@ i18n.init({
             console.log(this);
         });
     }
-    var plot_forewing = new oribir.plot.Plot('forewing', params_now['observation'], 15, i18n.t('axes.time'), i18n.t('axes.forewing'));
-    var plot_hindwing = new oribir.plot.Plot('hindwing', params_now['observation'], 15, i18n.t('axes.time'), i18n.t('axes.hindwing'));
-    var plot_flight = new oribir.plot.Plot('flight', params_now['observation'], 31, i18n.t('axes.time'), i18n.t('axes.distance'));
+    var plot_forewing = new oribir.plot.Plot('forewing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.forewing'));
+    var plot_hindwing = new oribir.plot.Plot('hindwing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.hindwing'));
+    var plot_flight = new oribir.plot.Plot('flight', params_now['observation'], oribir.Individual.MAX_FLIGHT, i18n.t('axes.time'), i18n.t('axes.distance'));
     var population;
     function run() {
         var T = parseInt(params_now['observation']);

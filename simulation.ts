@@ -63,30 +63,35 @@ module oribir.random {
     }
 }
 
-module oribir.simulation {
+module oribir {
 
-var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]]
+var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]];
+var initial_gamete = [2, 1, 2, 1, 2, 1, 2, 1];
 
 function sum(lhs, rhs) {return lhs + rhs;}
 
 export class Individual {
     private _traits: number[];
 
-    static mutation_rate: number = 0.1 * 4 / 3;
+    static _MUTATION_RATE: number = 0.1 * 4 / 3;
+    static set MUTATION_RATE(mu: number) {
+        this._MUTATION_RATE = mu * 4 / 3;
+    }
+
+    static get MAX_WING(): number {return 12;}
+    static get MAX_FLIGHT(): number {return 24;}
 
     constructor(
-        private _zygote: number[][] = [[8, 0, 8, 0], [8, 0, 8, 0]]
-    ) {
-        this._traits = [this._zygote[0].slice(0, 1).concat(
-                        this._zygote[1].slice(0, 1)).reduce(sum) / 2,
-                        this._zygote[0].slice(2, 4).concat(
-                        this._zygote[1].slice(2, 4)).reduce(sum) / 2];
-        this._traits.push(15 + this._traits[1] - this._traits[0]);
+        private _zygote: number[][] = [initial_gamete, initial_gamete]
+    ) {console.log(this._zygote);
+        this._traits = [this._zygote[0].slice(0, 4).concat(
+                        this._zygote[1].slice(0, 4)).reduce(sum) / 2,
+                        this._zygote[0].slice(4, 8).concat(
+                        this._zygote[1].slice(4, 8)).reduce(sum) / 2];
+        this._traits.push(Individual.MAX_FLIGHT / 2 +
+                          this._traits[1] - this._traits[0]);
     }
-    print() {
-        console.log(this._zygote);
-        console.log(this.phenotype);
-    }
+
     get flight(): number {return this._traits[2];}
     get phenotype(): number[] {return this._traits;}
 
@@ -101,12 +106,13 @@ export class Individual {
 
     gametogenesis(): number[] {
         var gamete = [];
-        for (var i=0; i<4; ++i) {
-            gamete.push(this._zygote[random.randrange(2)][i]);
-        }
-        if (random.bernoulli(Individual.mutation_rate)) {
-            var locus = random.randrange(gamete.length);
-            gamete[locus] = random.randrange(4) * (4 - 3 * (locus % 2));
+        for (var i=0; i<initial_gamete.length; ++i) {
+            if (random.bernoulli(Individual._MUTATION_RATE)) {
+                gamete.push(random.randrange(4));
+                // 1/4 remains the same -> correction in mu setter
+            } else {
+                gamete.push(this._zygote[random.randrange(2)][i]);
+            }
         }
         return gamete;
     }
@@ -116,9 +122,9 @@ export class Population {
     private _members: Individual[];
     private _landscape;
     static _OPTIMA = {
-        '0': 0.03,
+        '0': 0.97,
         '1': 0.50,
-        '2': 0.97,
+        '2': 0.03,
     };
 
     constructor(private _size: number, environment='1') {
@@ -129,7 +135,7 @@ export class Population {
         var sigma = 0.5;
         var coef = -0.5 / Math.pow(sigma, 2);
         this._landscape = function(flight) {
-            var base = flight/31.0 - Population._OPTIMA[environment];
+            var base = flight/Individual.MAX_FLIGHT - Population._OPTIMA[environment];
             return Math.exp(coef * Math.pow(base, 2));
         };
     }
@@ -152,7 +158,7 @@ export class Population {
         var indices = roulette(fitness_values, this._size);
         var survivors = [];
         for (var i=0; i<indices.length; ++i) {
-            survivors.push(this._members[i]);
+            survivors.push(this._members[indices[i]]);
         }
         this._members = survivors;
     }
@@ -202,15 +208,16 @@ export class Population {
 }
 
 (function () {if (typeof window == 'undefined') {
-    var pop = new oribir.simulation.Population(4);
+    var die = oribir.util.range(1, 7);
+    console.log(oribir.random.sample(die, 3));
+    console.log(oribir.util.partial_sums(die));
+    console.log(oribir.roulette(die, 10));
+
+    var pop = new oribir.Population(4, '2');
     pop.test();
     for (var t=0; t<4; ++t) {
         pop.reproduce();
         pop.survive();
         console.log(pop.snapshot());
     }
-    var die = oribir.util.range(1, 7);
-    console.log(oribir.random.sample(die, 3));
-    console.log(oribir.util.partial_sums(die));
-    console.log(oribir.simulation.roulette(die, 10));
 }})();

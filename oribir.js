@@ -98,7 +98,8 @@ i18n.init({
             bird.fly();
         }
         d3.selectAll('g.bird').on('click', function () {
-            console.log(this);
+            d3.selectAll('g.bird > rect').attr('stroke', 'none');
+            d3.select(this).select('rect').attr('stroke', '#FF0000');
         });
     }
     var plot_forewing = new oribir.plot.Plot('forewing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.forewing'));

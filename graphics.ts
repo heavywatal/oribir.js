@@ -16,7 +16,8 @@ module oribir.graphics {
             this._g.append('rect')
                 .attr('width', 100)
                 .attr('height', 100)
-                .attr('fill', 'none');
+                .attr('fill', 'none')
+                .attr('stroke-width', '4');
             this._g.append('line')
                 .attr('x1', 5).attr('x2', 95)
                 .attr('y1', 90).attr('y2', 90)

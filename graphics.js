@@ -9,7 +9,7 @@ var oribir;
                 if (_id === void 0) { _id = 0; }
                 this._id = _id;
                 this._g = field.append('g').attr('class', 'bird').attr('flight', flight * 8);
-                this._g.append('rect').attr('width', 100).attr('height', 100).attr('fill', 'none');
+                this._g.append('rect').attr('width', 100).attr('height', 100).attr('fill', 'none').attr('stroke-width', '4');
                 this._g.append('line').attr('x1', 5).attr('x2', 95).attr('y1', 90).attr('y2', 90).attr('stroke-width', 10).attr('stroke', '#000000');
                 this._g.append('line').attr('x1', 85).attr('x2', 95).attr('y1', 90).attr('y2', 90).attr('stroke-width', 10).attr('stroke', '#FFFF00');
                 this._g.append('ellipse').attr('rx', 10).attr('ry', forewing * 3).attr('cx', 60).attr('cy', 90 - forewing * 3).attr('fill', 'none').attr('stroke', '#000000').attr('stroke-width', 10);

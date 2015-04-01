@@ -86,7 +86,6 @@ var oribir;
         function Individual(_zygote) {
             if (_zygote === void 0) { _zygote = [initial_gamete, initial_gamete]; }
             this._zygote = _zygote;
-            console.log(this._zygote);
             this._traits = [this._zygote[0].slice(0, 4).concat(this._zygote[1].slice(0, 4)).reduce(sum) / 2, this._zygote[0].slice(4, 8).concat(this._zygote[1].slice(4, 8)).reduce(sum) / 2];
             this._traits.push(Individual.MAX_FLIGHT / 2 + this._traits[1] - this._traits[0]);
         }

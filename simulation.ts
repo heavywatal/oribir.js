@@ -83,7 +83,7 @@ export class Individual {
 
     constructor(
         private _zygote: number[][] = [initial_gamete, initial_gamete]
-    ) {console.log(this._zygote);
+    ) {
         this._traits = [this._zygote[0].slice(0, 4).concat(
                         this._zygote[1].slice(0, 4)).reduce(sum) / 2,
                         this._zygote[0].slice(4, 8).concat(

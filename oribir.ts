@@ -122,11 +122,6 @@ i18n.init({
                                                 idx);
             bird.fly();
         }
-        d3.selectAll('g.bird').on('click', function() {
-            d3.selectAll('g.bird > rect').attr('stroke', 'none');
-            d3.select(this).select('rect')
-                .attr('stroke', '#FF0000');
-        });
     }
 
     var plot_forewing = new oribir.plot.Plot(

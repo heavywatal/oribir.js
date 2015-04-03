@@ -97,10 +97,6 @@ i18n.init({
             var bird = new oribir.graphics.Bird(field, snapshot[0][idx], snapshot[1][idx], snapshot[2][idx], idx);
             bird.fly();
         }
-        d3.selectAll('g.bird').on('click', function () {
-            d3.selectAll('g.bird > rect').attr('stroke', 'none');
-            d3.select(this).select('rect').attr('stroke', '#FF0000');
-        });
     }
     var plot_forewing = new oribir.plot.Plot('forewing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.forewing'));
     var plot_hindwing = new oribir.plot.Plot('hindwing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.hindwing'));

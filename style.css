@@ -136,3 +136,34 @@ text {
 #field {
     margin: 0 0 12px 0;
 }
+
+line.trunk {
+    stroke-width: 10;
+    stroke: #000000;
+}
+
+line.beak {
+    stroke-width: 10;
+    stroke: #FFFF00;
+}
+
+ellipse.wing {
+    fill: none;
+    stroke: #000000;
+    stroke-width: 10;
+}
+
+g.bird > rect {
+    fill: none;
+}
+
+g.bird > rect.selected {
+    stroke: #FF0000;
+    stroke-width: 4;
+}
+
+ellipse.oasis {
+    fill: #0066FF;
+    stroke: #99CCFF;
+    stroke-width: 6;
+}

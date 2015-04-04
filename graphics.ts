@@ -14,36 +14,29 @@ module oribir.graphics {
                 .attr('class', 'bird')
                 .attr('flight', flight * 8);
             this._g.append('line')
+                .attr('class', 'trunk')
                 .attr('x1', 5).attr('x2', 95)
-                .attr('y1', 90).attr('y2', 90)
-                .attr('stroke-width', 10)
-                .attr('stroke', '#000000');
+                .attr('y1', 90).attr('y2', 90);
             this._g.append('line')
+                .attr('class', 'beak')
                 .attr('x1', 85).attr('x2', 95)
-                .attr('y1', 90).attr('y2', 90)
-                .attr('stroke-width', 10)
-                .attr('stroke', '#FFFF00');
+                .attr('y1', 90).attr('y2', 90);
             this._g.append('ellipse')
+                .attr('class', 'wing')
                 .attr('rx', 10).attr('ry', forewing * 3)
-                .attr('cx', 60).attr('cy', 90 - forewing * 3)
-                .attr('fill', 'none')
-                .attr('stroke', '#000000')
-                .attr('stroke-width', 10);
+                .attr('cx', 60).attr('cy', 90 - forewing * 3);
             this._g.append('ellipse')
+                .attr('class', 'wing')
                 .attr('rx', 10).attr('ry', hindwing * 3)
-                .attr('cx', 25).attr('cy', 90 - hindwing * 3)
-                .attr('fill', 'none')
-                .attr('stroke', '#000000')
-                .attr('stroke-width', 10);
+                .attr('cx', 25).attr('cy', 90 - hindwing * 3);
             this._g.append('rect')
                 .attr('width', 100)
-                .attr('height', 100)
-                .attr('fill', 'none')
-                .attr('stroke-width', '4');
+                .attr('height', 100);
             this._g.on('click', function() {
-                d3.selectAll('g.bird > rect').attr('stroke', 'none');
+                d3.selectAll('g.bird > rect')
+                    .attr('class', null);
                 d3.select(this).select('rect')
-                    .attr('stroke', '#FF0000');
+                    .attr('class', 'selected');
             });
             var x = Math.random() * parseInt(field.style('width'));
             var y = Math.random() * (parseInt(field.style('height')) - 100);
@@ -86,11 +79,9 @@ module oribir.graphics {
     export function Oasis(field, x, y) {
         var oasis = field.append('g');
         oasis.append('ellipse')
+            .attr('class', 'oasis')
             .attr('rx', 80).attr('ry', 30)
-            .attr('cx', 40).attr('cy', 15)
-            .attr('fill', '#0066FF')
-            .attr('stroke', '#99CCFF')
-            .attr('stroke-width', '6');
+            .attr('cx', 40).attr('cy', 15);
         oasis.attr('transform', 'translate('+ x +','+ y +')');
     }
 

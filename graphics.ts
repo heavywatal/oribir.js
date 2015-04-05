@@ -86,13 +86,10 @@ module oribir.graphics {
     }
 
     export function Field() {
-        var field = d3.select('#field').append('svg')
-            .attr('width', '100%')
-            .attr('height', 400);
+        var field = d3.select('#field').append('svg');
         field.append('rect')
             .attr('width', '100%')
-            .attr('height', '100%')
-            .attr('fill', '#FF6600');
+            .attr('height', '100%');
         oribir.graphics.Oasis(field, 100, 100);
         oribir.graphics.Oasis(field, 300, 300);
         oribir.graphics.Oasis(field, 500, 200);

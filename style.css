@@ -10,6 +10,46 @@ body {
     margin: 0 auto;
 }
 
+.tabs {
+    position: relative;
+    list-style: none;
+    height: 1680px;
+}
+
+.tabs li {
+    float: left;
+    display: block;
+}
+
+input[type="radio"] {display: none;}
+
+.tabs label {
+    cursor: pointer;
+    background: #999999;
+    margin: 4px 4px 0 0;
+    padding: 10px 15px;
+    border-radius: 3px 3px 0 0;
+}
+
+.tab-content {
+    display: none;
+    position: absolute;
+    left: 0;
+    background: #CCCCCC;
+    z-index: 2;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+input[name="tab"]:checked ~ .tab-content {
+    display: block;
+}
+input[name="tab"]:checked ~ label {
+    background: #CCCCCC;
+    margin-top: 0;
+}
+
 dl {
     display: inline-block;
     width: 270px;
@@ -103,13 +143,14 @@ input {
     text-align: right;
 }
 
-#graph {
+.graph {
     background-color: #EEEEEE;
 }
 
-svg {
+.graph svg {
     vertical-align: top;
     height: 400px;
+    width: 100%;
 }
 
 rect.panel_background {
@@ -133,16 +174,16 @@ text {
     font-size: 110%;
 }
 
-#field {
+.field {
     margin: 0 0 12px 0;
 }
 
-#field svg {
+.field svg {
     width: 100%;
     height: 400px;
 }
 
-#field svg > rect {
+.field svg > rect {
     fill: #FF6600;
 }
 

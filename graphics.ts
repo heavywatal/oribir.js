@@ -61,7 +61,7 @@ module oribir.graphics {
                     .attr('transform',
                           'translate('+ (x+dx) + ',' + (y+dy)  +'), rotate('+angle+',0,100)');
             }
-            var field_width = parseInt(d3.select('#field').style('width'));
+            var field_width = parseInt(d3.select('.field').style('width'));
             if (x + distance > field_width) {
                 obj.transition().delay(step * num_steps * 1.2)
                     .duration(0).ease('linear')
@@ -85,8 +85,8 @@ module oribir.graphics {
         oasis.attr('transform', 'translate('+ x +','+ y +')');
     }
 
-    export function Field() {
-        var field = d3.select('#field').append('svg');
+    export function Field(parent) {
+        var field = parent.append('svg');
         field.append('rect')
             .attr('width', '100%')
             .attr('height', '100%');

@@ -106,7 +106,7 @@ i18n.init({
     }
     lock_button.on('click', toggle_form);
 
-    var field = oribir.graphics.Field();
+    var field = oribir.graphics.Field(d3.select('.field'));
     function display_population(snapshot) {
         d3.selectAll('g.bird').transition().delay(0).remove();
         d3.selectAll('g.bird').remove();
@@ -123,14 +123,14 @@ i18n.init({
             bird.fly();
         }
     }
-
-    var plot_forewing = new oribir.plot.Plot(
+    var parent = d3.select('.graph');
+    var plot_forewing = new oribir.plot.Plot(parent,
         'forewing', params_now['observation'], oribir.Individual.MAX_WING,
         i18n.t('axes.time'), i18n.t('axes.forewing'));
-    var plot_hindwing = new oribir.plot.Plot(
+    var plot_hindwing = new oribir.plot.Plot(parent,
         'hindwing', params_now['observation'], oribir.Individual.MAX_WING,
         i18n.t('axes.time'), i18n.t('axes.hindwing'));
-    var plot_flight = new oribir.plot.Plot(
+    var plot_flight = new oribir.plot.Plot(parent,
         'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT,
         i18n.t('axes.time'), i18n.t('axes.distance'));
 

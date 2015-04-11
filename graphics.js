@@ -36,7 +36,7 @@ var oribir;
                     var angle = -8 * Math.sin(2 * Math.PI * prop);
                     obj.transition().ease('linear').delay(step * i + t).duration(step).attr('transform', 'translate(' + (x + dx) + ',' + (y + dy) + '), rotate(' + angle + ',0,100)');
                 }
-                var field_width = parseInt(d3.select('#field').style('width'));
+                var field_width = parseInt(d3.select('.field').style('width'));
                 if (x + distance > field_width) {
                     obj.transition().delay(step * num_steps * 1.2).duration(0).ease('linear').attr('transform', 'translate(' + (x - field_width - distance) + ',' + y + ')');
                 }
@@ -57,8 +57,8 @@ var oribir;
             oasis.attr('transform', 'translate(' + x + ',' + y + ')');
         }
         graphics.Oasis = Oasis;
-        function Field() {
-            var field = d3.select('#field').append('svg');
+        function Field(parent) {
+            var field = parent.append('svg');
             field.append('rect').attr('width', '100%').attr('height', '100%');
             oribir.graphics.Oasis(field, 100, 100);
             oribir.graphics.Oasis(field, 300, 300);

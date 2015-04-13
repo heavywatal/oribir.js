@@ -60,8 +60,7 @@ i18n.init({
         input_items.select('#' + id + ' label.value').text(value);
         params_now[id] = value;
     }
-    var button_box = d3.select('form').append('div').attr('id', 'button_box');
-    var lock_button = button_box.append('button').attr('type', 'button').attr('class', 'controller lock').text('Lock Parameters');
+    var lock_button = d3.select('form').append('button').attr('type', 'button').attr('class', 'controller lock').text('Lock Parameters');
     function toggle_form() {
         var is_unlocked = start_button.attr('disabled');
         if (is_unlocked) {

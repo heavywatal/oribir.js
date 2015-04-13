@@ -70,9 +70,7 @@ i18n.init({
         params_now[id] = value;
     }
 
-    var button_box = d3.select('form').append('div')
-        .attr('id', 'button_box');
-    var lock_button = button_box.append('button')
+    var lock_button = d3.select('form').append('button')
         .attr('type', 'button')
         .attr('class', 'controller lock')
         .text('Lock Parameters');

@@ -74,15 +74,8 @@ i18n.init({
         .attr('id', 'button_box');
     var lock_button = button_box.append('button')
         .attr('type', 'button')
-        .attr('id', 'lock')
-        .attr('class', 'controller')
+        .attr('class', 'controller lock')
         .text('Lock Parameters');
-    var start_button = button_box.append('button')
-        .attr('type', 'button')
-        .attr('id', 'start')
-        .attr('class', 'controller')
-        .attr('disabled', true)
-        .text('START!');
 
     function toggle_form() {
         var is_unlocked = start_button.attr('disabled');
@@ -106,7 +99,15 @@ i18n.init({
     }
     lock_button.on('click', toggle_form);
 
-    var field = oribir.graphics.Field(d3.select('.field'));
+    var tab_content = d3.select('#pop1');
+    var start_button = tab_content.append('button')
+        .attr('type', 'button')
+        .attr('class', 'controller start')
+        .attr('disabled', true)
+        .text('START!');
+    var div_field = tab_content.append('div')
+        .attr('class', 'field');
+    var field = oribir.graphics.Field(div_field);
     function display_population(snapshot) {
         d3.selectAll('g.bird').transition().delay(0).remove();
         d3.selectAll('g.bird').remove();
@@ -123,7 +124,8 @@ i18n.init({
             bird.fly();
         }
     }
-    var parent = d3.select('.graph');
+    var parent = tab_content.append('div')
+        .attr('class', 'graph');
     var plot_forewing = new oribir.plot.Plot(parent,
         'forewing', params_now['observation'], oribir.Individual.MAX_WING,
         i18n.t('axes.time'), i18n.t('axes.forewing'));

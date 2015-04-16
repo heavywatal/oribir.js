@@ -9,10 +9,10 @@ i18n.init({
     shortcutFunction: 'defaultValue'
 }, function (t) {
     var params = [
-        [t('params.oasis'), 'oasis', 0, 2, 1, 0],
-        [t('params.mu') + ' (<var>μ</var>)', 'mu', 1e-3, 1e-1, 1e-3, 1e-2],
         [t('params.popsize') + ' (<var>N</var>)', 'popsize', 100, 1000, 100, 100],
-        [t('params.observation'), 'observation', 50, 400, 50, 100]
+        [t('params.mu') + ' (<var>μ</var>)', 'mu', 1e-3, 1e-1, 1e-3, 1e-2],
+        [t('params.observation'), 'observation', 50, 400, 50, 100],
+        [t('params.oasis'), 'oasis', 0, 2, 1, 0]
     ];
     var params_now = {};
     for (var i = 0; i < params.length; ++i) {

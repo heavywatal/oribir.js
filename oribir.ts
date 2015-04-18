@@ -75,6 +75,7 @@ i18n.init({
         .attr('class', 'controller lock')
         .text('Lock Parameters');
 
+    var population: oribir.Population;
     function toggle_form() {
         var is_unlocked = start_button.attr('disabled');
         if (is_unlocked) {  // lock
@@ -134,7 +135,6 @@ i18n.init({
         'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT,
         i18n.t('axes.time'), i18n.t('axes.distance'));
 
-    var population;
     function run() {
         var T = parseInt(params_now['observation']);
         plot_forewing.domain([0, T]);

@@ -61,6 +61,7 @@ i18n.init({
         params_now[id] = value;
     }
     var lock_button = d3.select('form').append('button').attr('type', 'button').attr('class', 'controller lock').text('Lock Parameters');
+    var population;
     function toggle_form() {
         var is_unlocked = start_button.attr('disabled');
         if (is_unlocked) {
@@ -103,7 +104,6 @@ i18n.init({
     var plot_forewing = new oribir.plot.Plot(parent, 'forewing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.forewing'));
     var plot_hindwing = new oribir.plot.Plot(parent, 'hindwing', params_now['observation'], oribir.Individual.MAX_WING, i18n.t('axes.time'), i18n.t('axes.hindwing'));
     var plot_flight = new oribir.plot.Plot(parent, 'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT, i18n.t('axes.time'), i18n.t('axes.distance'));
-    var population;
     function run() {
         var T = parseInt(params_now['observation']);
         plot_forewing.domain([0, T]);

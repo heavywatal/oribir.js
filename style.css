@@ -10,20 +10,20 @@ body {
     margin: 0 auto;
 }
 
-.tabs {
+#tabs {
     position: relative;
     list-style: none;
     height: 1600px;
 }
 
-.tabs li {
+#tabs li {
     float: left;
     display: block;
 }
 
 input[type="radio"] {display: none;}
 
-.tabs label {
+#tabs label {
     cursor: pointer;
     background: #999999;
     margin: 4px 4px 0 0;

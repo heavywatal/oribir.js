@@ -42,10 +42,10 @@ input[type="radio"] {display: none;}
     width: 100%;
 }
 
-input[name="tab"]:checked ~ .tab-content {
+#tabs input[name="tab"]:checked ~ .tab-content {
     display: block;
 }
-input[name="tab"]:checked ~ label {
+#tabs input[name="tab"]:checked ~ label {
     background: #CCCCCC;
     margin-top: 0;
 }

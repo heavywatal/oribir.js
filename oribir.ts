@@ -122,7 +122,8 @@ i18n.init({
         .text('Population 2');
     li2.append('div')
         .attr('class', 'tab-content')
-        .attr('id', 'pop2');
+        .attr('id', 'pop2')
+        .text('UNDER CONSTRUCTION');
 
     var li3 = tabs.append('li');
     li3.append('input')
@@ -134,7 +135,8 @@ i18n.init({
         .text('Breeding Experiment');
     li3.append('div')
         .attr('class', 'tab-content')
-        .attr('id', 'breeding');
+        .attr('id', 'breeding')
+        .text('UNDER CONSTRUCTION');
 
     var tab_content = d3.select('#pop1');
     var start_button = tab_content.append('button')

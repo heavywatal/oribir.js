@@ -87,15 +87,15 @@ i18n.init({
     var tabs = d3.select('#tabs');
     var li1 = tabs.append('li');
     li1.append('input').attr('id', 'tab1').attr('name', 'tab').attr('type', 'radio').property('checked', true);
-    li1.append('label').attr('for', 'tab1').text('Population 1');
+    li1.append('label').attr('for', 'tab1').text(t('population') + ' 1');
     li1.append('div').attr('class', 'tab-content').attr('id', 'pop1');
     var li2 = tabs.append('li');
     li2.append('input').attr('id', 'tab2').attr('name', 'tab').attr('type', 'radio');
-    li2.append('label').attr('for', 'tab2').text('Population 2');
+    li2.append('label').attr('for', 'tab2').text(t('population') + ' 2');
     li2.append('div').attr('class', 'tab-content').attr('id', 'pop2').text('UNDER CONSTRUCTION');
     var li3 = tabs.append('li');
     li3.append('input').attr('id', 'tab3').attr('name', 'tab').attr('type', 'radio');
-    li3.append('label').attr('for', 'tab3').text('Breeding Experiment');
+    li3.append('label').attr('for', 'tab3').text(t('breeding experiment'));
     li3.append('div').attr('class', 'tab-content').attr('id', 'breeding').text('UNDER CONSTRUCTION');
     var tab_content = d3.select('#pop1');
     var start_button = tab_content.append('button').attr('type', 'button').attr('class', 'controller start').attr('disabled', true).text('START!');

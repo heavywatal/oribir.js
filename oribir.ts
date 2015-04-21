@@ -107,7 +107,7 @@ i18n.init({
         .property('checked', true);
     li1.append('label')
         .attr('for', 'tab1')
-        .text('Population 1');
+        .text(t('population')+' 1');
     li1.append('div')
         .attr('class', 'tab-content')
         .attr('id', 'pop1');
@@ -119,7 +119,7 @@ i18n.init({
         .attr('type', 'radio');
     li2.append('label')
         .attr('for', 'tab2')
-        .text('Population 2');
+        .text(t('population')+' 2');
     li2.append('div')
         .attr('class', 'tab-content')
         .attr('id', 'pop2')
@@ -132,7 +132,7 @@ i18n.init({
         .attr('type', 'radio');
     li3.append('label')
         .attr('for', 'tab3')
-        .text('Breeding Experiment');
+        .text(t('breeding experiment'));
     li3.append('div')
         .attr('class', 'tab-content')
         .attr('id', 'breeding')

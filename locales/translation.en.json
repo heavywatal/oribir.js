@@ -15,5 +15,7 @@
         "download": "Download oribir.js",
         "report": "Report a bug",
         "develop": "Development site"
-    }
+    },
+    "population": "Population",
+    "breeding experiment": "Breeding Experiment"
 }

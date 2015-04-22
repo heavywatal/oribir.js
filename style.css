@@ -126,6 +126,7 @@ input {
 
 .controller:disabled {
     background-color: #BBBBBB;
+    cursor: default;
 }
 
 #footer .button {

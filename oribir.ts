@@ -5,6 +5,105 @@
 /// <reference path='plot.ts' />
 'use strict';
 
+
+class TabContent {
+    private _population: oribir.Population;
+    private _start_button;
+    private _field;
+    private _plot_forewing;
+    private _plot_hindwing;
+    private _plot_flight;
+
+    constructor(id: string, params_now) {
+        //TODO
+        var N = parseInt(params_now['popsize']);
+        this._population = new oribir.Population(N, params_now['oasis']);
+        var tab_content = d3.select(id);
+        var self = this;
+        this._start_button = tab_content.append('button')
+          .attr('type', 'button')
+          .attr('class', 'controller start')
+          .attr('disabled', true)
+          .text('START!')
+          .on('click', function(){self.run()});
+        var div_field = tab_content.append('div')
+          .attr('class', 'field');
+        this._field = oribir.graphics.Field(div_field);
+
+        var parent = tab_content.append('div')
+            .attr('class', 'graph');
+        this._plot_forewing = new oribir.plot.Plot(parent,
+            'forewing', params_now['observation'], oribir.Individual.MAX_WING,
+            i18n.t('axes.time'), i18n.t('axes.forewing'));
+        this._plot_hindwing = new oribir.plot.Plot(parent,
+            'hindwing', params_now['observation'], oribir.Individual.MAX_WING,
+            i18n.t('axes.time'), i18n.t('axes.hindwing'));
+        this._plot_flight = new oribir.plot.Plot(parent,
+            'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT,
+            i18n.t('axes.time'), i18n.t('axes.distance'));
+        d3.select(window).on('resize', this.update_width);
+    }
+
+    public display_population(): number[][] {
+        var snapshot = this._population.snapshot();
+        d3.selectAll('g.bird').transition().delay(0).remove();
+        d3.selectAll('g.bird').remove();
+        var n_samples = 3;
+        var range = oribir.util.range(snapshot[0].length);
+        var indices = oribir.random.sample(range, n_samples);
+        for (var i=0; i<n_samples; ++i) {
+            var idx = indices[i];
+            var bird = new oribir.graphics.Bird(this._field,
+                                                snapshot[0][idx],
+                                                snapshot[1][idx],
+                                                snapshot[2][idx],
+                                                idx);
+            bird.fly();
+        }
+        return snapshot;
+    }
+
+    public run(): void {
+        //TODO
+        //var T = parseInt(params_now['observation']);
+        var T = 100;
+        this._plot_forewing.domain([0, T]);
+        this._plot_hindwing.domain([0, T]);
+        this._plot_flight.domain([0, T]);
+        this._plot_forewing.path_d([]);
+        this._plot_hindwing.path_d([]);
+        this._plot_flight.path_d([]);
+
+        var mean_history = [[], [], []];
+        var sd_history = [[], [], []];
+        for (var t=0; t<=T; ++t) {
+            var phenotypes = this.display_population();
+            for (var i=0; i<3; ++i) {
+                mean_history[i].push(d3.mean(phenotypes[i]));
+                //sd_history[i].push(Math.sqrt(d3.variance(phenotypes[i])));
+            }
+            this._plot_forewing.path_d(mean_history[0], 10 * t);
+            this._plot_hindwing.path_d(mean_history[1], 10 * t);
+            this._plot_flight.path_d(mean_history[2], 10 * t);
+            this._population.reproduce();
+            this._population.survive();
+        }
+    }
+
+    public erase_plot(): void {
+        this._plot_forewing.path_d([]);
+        this._plot_hindwing.path_d([]);
+        this._plot_flight.path_d([]);
+    }
+
+    public update_width(): void {
+        this._plot_forewing.update_width();
+        this._plot_hindwing.update_width();
+        this._plot_flight.update_width();
+    }
+}
+
+
 i18n.init({
   resGetPath: 'locales/__ns__.__lng__.json',
   shortcutFunction: 'defaultValue'
@@ -75,24 +174,19 @@ i18n.init({
         .attr('class', 'controller lock')
         .text('Lock Parameters');
 
-    var population: oribir.Population;
     function toggle_form() {
-        var is_unlocked = start_button.attr('disabled');
+        var is_unlocked = d3.select('button.start').attr('disabled');
         if (is_unlocked) {  // lock
             d3.selectAll('.param_range input').attr('disabled', true);
-            start_button.attr('disabled', null);
+            d3.select('button.start').attr('disabled', null);
             lock_button.text('Reset');
             oribir.Individual.MUTATION_RATE = params_now['mu'];
-            var N = parseInt(params_now['popsize']);
-            population = new oribir.Population(N, params_now['oasis']);
-            display_population(population.snapshot());
+            tab1.display_population();
         } else {  // reset
             d3.selectAll('.param_range input').attr('disabled', null);
-            start_button.attr('disabled', true);
+            d3.select('button.start').attr('disabled', true);
             lock_button.text('Lock');
-            plot_forewing.path_d([]);
-            plot_hindwing.path_d([]);
-            plot_flight.path_d([]);
+            tab1.erase_plot();
             d3.selectAll('g.bird').remove();
         }
     }
@@ -138,76 +232,7 @@ i18n.init({
         .attr('id', 'breeding')
         .text('UNDER CONSTRUCTION');
 
-    var tab_content = d3.select('#pop1');
-    var start_button = tab_content.append('button')
-        .attr('type', 'button')
-        .attr('class', 'controller start')
-        .attr('disabled', true)
-        .text('START!');
-    var div_field = tab_content.append('div')
-        .attr('class', 'field');
-    var field = oribir.graphics.Field(div_field);
-    function display_population(snapshot) {
-        d3.selectAll('g.bird').transition().delay(0).remove();
-        d3.selectAll('g.bird').remove();
-        var n_samples = 3;
-        var range = oribir.util.range(population.size);
-        var indices = oribir.random.sample(range, n_samples);
-        for (var i=0; i<n_samples; ++i) {
-            var idx = indices[i];
-            var bird = new oribir.graphics.Bird(field,
-                                                snapshot[0][idx],
-                                                snapshot[1][idx],
-                                                snapshot[2][idx],
-                                                idx);
-            bird.fly();
-        }
-    }
-    var parent = tab_content.append('div')
-        .attr('class', 'graph');
-    var plot_forewing = new oribir.plot.Plot(parent,
-        'forewing', params_now['observation'], oribir.Individual.MAX_WING,
-        i18n.t('axes.time'), i18n.t('axes.forewing'));
-    var plot_hindwing = new oribir.plot.Plot(parent,
-        'hindwing', params_now['observation'], oribir.Individual.MAX_WING,
-        i18n.t('axes.time'), i18n.t('axes.hindwing'));
-    var plot_flight = new oribir.plot.Plot(parent,
-        'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT,
-        i18n.t('axes.time'), i18n.t('axes.distance'));
-
-    function run() {
-        var T = parseInt(params_now['observation']);
-        plot_forewing.domain([0, T]);
-        plot_hindwing.domain([0, T]);
-        plot_flight.domain([0, T]);
-        plot_forewing.path_d([]);
-        plot_hindwing.path_d([]);
-        plot_flight.path_d([]);
-
-        var mean_history = [[], [], []];
-        var sd_history = [[], [], []];
-        for (var t=0; t<=T; ++t) {
-            var phenotypes = population.snapshot();
-            display_population(phenotypes);
-            for (var i=0; i<3; ++i) {
-                mean_history[i].push(d3.mean(phenotypes[i]));
-                //sd_history[i].push(Math.sqrt(d3.variance(phenotypes[i])));
-            }
-            plot_forewing.path_d(mean_history[0], 10 * t);
-            plot_hindwing.path_d(mean_history[1], 10 * t);
-            plot_flight.path_d(mean_history[2], 10 * t);
-            population.reproduce();
-            population.survive();
-        }
-    }
-    start_button.on('click', run);
-
-    function update_width() {
-        plot_forewing.update_width();
-        plot_hindwing.update_width();
-        plot_flight.update_width();
-    }
-    d3.select(window).on('resize', update_width);
+    var tab1 = new TabContent('#pop1', params_now);
 
     var footer = d3.select('#footer');
     footer.append('a')

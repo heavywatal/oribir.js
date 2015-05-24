@@ -5,22 +5,21 @@
 /// <reference path='plot.ts' />
 'use strict';
 
+function param_value(id: string): string {
+    return <any> d3.select('#'+ id +' input').property('value');
+}
 
 class TabContent {
     private _population: oribir.Population;
-    private _start_button;
     private _field;
     private _plot_forewing;
     private _plot_hindwing;
     private _plot_flight;
 
-    constructor(id: string, params_now) {
-        //TODO
-        var N = parseInt(params_now['popsize']);
-        this._population = new oribir.Population(N, params_now['oasis']);
+    constructor(id: string, t) {
         var tab_content = d3.select(id);
         var self = this;
-        this._start_button = tab_content.append('button')
+        tab_content.append('button')
           .attr('type', 'button')
           .attr('class', 'controller start')
           .attr('disabled', true)
@@ -30,21 +29,35 @@ class TabContent {
           .attr('class', 'field');
         this._field = oribir.graphics.Field(div_field);
 
+        var T = parseInt(param_value('observation'));
         var parent = tab_content.append('div')
             .attr('class', 'graph');
         this._plot_forewing = new oribir.plot.Plot(parent,
-            'forewing', params_now['observation'], oribir.Individual.MAX_WING,
-            i18n.t('axes.time'), i18n.t('axes.forewing'));
+            'forewing', T, oribir.Individual.MAX_WING,
+            t('axes.time'), t('axes.forewing'));
         this._plot_hindwing = new oribir.plot.Plot(parent,
-            'hindwing', params_now['observation'], oribir.Individual.MAX_WING,
-            i18n.t('axes.time'), i18n.t('axes.hindwing'));
+            'hindwing', T, oribir.Individual.MAX_WING,
+            t('axes.time'), t('axes.hindwing'));
         this._plot_flight = new oribir.plot.Plot(parent,
-            'flight', params_now['observation'], oribir.Individual.MAX_FLIGHT,
-            i18n.t('axes.time'), i18n.t('axes.distance'));
-        d3.select(window).on('resize', this.update_width);
+            'flight', T, oribir.Individual.MAX_FLIGHT,
+            t('axes.time'), t('axes.distance'));
+        d3.select(window).on('resize', function() {self.update_width()});
     }
 
-    public display_population(): number[][] {
+    public get_ready() {
+        var N = parseInt(param_value('popsize'));
+        var env = param_value('oasis');
+        this._population = new oribir.Population(N, env);
+        this.display_population();
+    }
+
+    public erase_plot(): void {
+        this._plot_forewing.path_d([]);
+        this._plot_hindwing.path_d([]);
+        this._plot_flight.path_d([]);
+    }
+
+    private display_population(): number[][] {
         var snapshot = this._population.snapshot();
         d3.selectAll('g.bird').transition().delay(0).remove();
         d3.selectAll('g.bird').remove();
@@ -63,10 +76,8 @@ class TabContent {
         return snapshot;
     }
 
-    public run(): void {
-        //TODO
-        //var T = parseInt(params_now['observation']);
-        var T = 100;
+    private run(): void {
+        var T = parseInt(param_value('observation'));
         this._plot_forewing.domain([0, T]);
         this._plot_hindwing.domain([0, T]);
         this._plot_flight.domain([0, T]);
@@ -90,13 +101,7 @@ class TabContent {
         }
     }
 
-    public erase_plot(): void {
-        this._plot_forewing.path_d([]);
-        this._plot_hindwing.path_d([]);
-        this._plot_flight.path_d([]);
-    }
-
-    public update_width(): void {
+    private update_width(): void {
         this._plot_forewing.update_width();
         this._plot_hindwing.update_width();
         this._plot_flight.update_width();
@@ -119,12 +124,6 @@ i18n.init({
         [t('params.oasis'),
          'oasis', 0, 2, 1, 0]
     ];
-
-    var params_now = {};
-    for (var i=0; i<params.length; ++i) {
-        var x = params[i];
-        params_now[String(x[1])] = x[5];
-    }
 
     var input_items = d3.select('form')
         .selectAll('dl')
@@ -152,7 +151,11 @@ i18n.init({
         .attr('max', function(d){return d[3];})
         .attr('step', function(d){return d[4];})
         .attr('value', function(d){return d[5];})
-        .on('input', function(d){update_param(d[1], this.value);});
+        .on('input', function(d){
+            input_items
+                .select('#'+ d[1] +' label.value')
+                .text(this.value);
+        });
     input_ranges.append('label')
         .attr('class', 'min')
         .attr('for', function(d){return d[1];})
@@ -162,35 +165,10 @@ i18n.init({
         .attr('for', function(d){return d[1];})
         .text(function(d){return d[3];});
 
-    function update_param(id, value) {
-        input_items
-            .select('#'+id+' label.value')
-            .text(value);
-        params_now[id] = value;
-    }
-
     var lock_button = d3.select('form').append('button')
         .attr('type', 'button')
         .attr('class', 'controller lock')
         .text('Lock Parameters');
-
-    function toggle_form() {
-        var is_unlocked = d3.select('button.start').attr('disabled');
-        if (is_unlocked) {  // lock
-            d3.selectAll('.param_range input').attr('disabled', true);
-            d3.select('button.start').attr('disabled', null);
-            lock_button.text('Reset');
-            oribir.Individual.MUTATION_RATE = params_now['mu'];
-            tab1.display_population();
-        } else {  // reset
-            d3.selectAll('.param_range input').attr('disabled', null);
-            d3.select('button.start').attr('disabled', true);
-            lock_button.text('Lock');
-            tab1.erase_plot();
-            d3.selectAll('g.bird').remove();
-        }
-    }
-    lock_button.on('click', toggle_form);
 
     var tabs = d3.select('#tabs');
     var li1 = tabs.append('li');
@@ -232,19 +210,37 @@ i18n.init({
         .attr('id', 'breeding')
         .text('UNDER CONSTRUCTION');
 
-    var tab1 = new TabContent('#pop1', params_now);
+    var tab1 = new TabContent('#pop1', t);
+
+    function toggle_form() {
+        var is_unlocked = d3.select('button.start').attr('disabled');
+        if (is_unlocked) {  // lock
+            d3.selectAll('.param_range input').attr('disabled', true);
+            d3.select('button.start').attr('disabled', null);
+            lock_button.text('Reset');
+            oribir.Individual.MUTATION_RATE = parseFloat(param_value('mu'));
+            tab1.get_ready();
+        } else {  // reset
+            d3.selectAll('.param_range input').attr('disabled', null);
+            d3.select('button.start').attr('disabled', true);
+            lock_button.text('Lock');
+            tab1.erase_plot();
+            d3.selectAll('g.bird').remove();
+        }
+    }
+    lock_button.on('click', toggle_form);
 
     var footer = d3.select('#footer');
     footer.append('a')
         .attr('class', 'button')
         .attr('href', 'https://github.com/heavywatal/oribir.js/releases/latest')
-        .text(i18n.t('footer.download'));
+        .text(t('footer.download'));
     footer.append('a')
         .attr('class', 'button')
         .attr('href', 'https://github.com/heavywatal/oribir.js/issues')
-        .text(i18n.t('footer.report'));
+        .text(t('footer.report'));
     footer.append('a')
         .attr('class', 'button')
         .attr('href', 'https://github.com/heavywatal/oribir.js')
-        .text(i18n.t('footer.develop'));
+        .text(t('footer.develop'));
 });

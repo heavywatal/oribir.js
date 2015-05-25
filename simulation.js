@@ -1,3 +1,4 @@
+'use strict';
 var oribir;
 (function (oribir) {
     var util;
@@ -79,15 +80,15 @@ var oribir;
 (function (oribir) {
     var genotype_space = [[0, 4, 8, 12], [0, 1, 2, 3]];
     var initial_gamete = [2, 1, 2, 1, 2, 1, 2, 1];
-    function sum(lhs, rhs) {
-        return lhs + rhs;
-    }
+    function sum(lhs, rhs) { return lhs + rhs; }
     var Individual = (function () {
         function Individual(_zygote) {
             if (_zygote === void 0) { _zygote = [initial_gamete, initial_gamete]; }
             this._zygote = _zygote;
-            this._traits = [this._zygote[0].slice(0, 4).concat(this._zygote[1].slice(0, 4)).reduce(sum) / 2, this._zygote[0].slice(4, 8).concat(this._zygote[1].slice(4, 8)).reduce(sum) / 2];
-            this._traits.push(Individual.MAX_FLIGHT / 2 + this._traits[1] - this._traits[0]);
+            this._traits = [this._zygote[0].slice(0, 4).concat(this._zygote[1].slice(0, 4)).reduce(sum) / 2,
+                this._zygote[0].slice(4, 8).concat(this._zygote[1].slice(4, 8)).reduce(sum) / 2];
+            this._traits.push(Individual.MAX_FLIGHT / 2 +
+                this._traits[1] - this._traits[0]);
         }
         Object.defineProperty(Individual, "MUTATION_RATE", {
             set: function (mu) {
@@ -97,30 +98,22 @@ var oribir;
             configurable: true
         });
         Object.defineProperty(Individual, "MAX_WING", {
-            get: function () {
-                return 12;
-            },
+            get: function () { return 12; },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(Individual, "MAX_FLIGHT", {
-            get: function () {
-                return 24;
-            },
+            get: function () { return 24; },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(Individual.prototype, "flight", {
-            get: function () {
-                return this._traits[2];
-            },
+            get: function () { return this._traits[2]; },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(Individual.prototype, "phenotype", {
-            get: function () {
-                return this._traits;
-            },
+            get: function () { return this._traits; },
             enumerable: true,
             configurable: true
         });
@@ -198,9 +191,7 @@ var oribir;
             return output;
         };
         Object.defineProperty(Population.prototype, "size", {
-            get: function () {
-                return this._members.length;
-            },
+            get: function () { return this._members.length; },
             enumerable: true,
             configurable: true
         });

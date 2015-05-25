@@ -11,19 +11,22 @@ var TabContent = (function () {
     function TabContent(id, t) {
         var tab_content = d3.select(id);
         var self = this;
-        tab_content.append('button').attr('type', 'button').attr('class', 'controller start').attr('disabled', true).text('START!').on('click', function () {
-            self.run();
-        });
-        var div_field = tab_content.append('div').attr('class', 'field');
+        tab_content.append('button')
+            .attr('type', 'button')
+            .attr('class', 'controller start')
+            .attr('disabled', true)
+            .text('START!')
+            .on('click', function () { self.run(); });
+        var div_field = tab_content.append('div')
+            .attr('class', 'field');
         this._field = oribir.graphics.Field(div_field);
         var T = parseInt(param_value('observation'));
-        var parent = tab_content.append('div').attr('class', 'graph');
+        var parent = tab_content.append('div')
+            .attr('class', 'graph');
         this._plot_forewing = new oribir.plot.Plot(parent, 'forewing', T, oribir.Individual.MAX_WING, t('axes.time'), t('axes.forewing'));
         this._plot_hindwing = new oribir.plot.Plot(parent, 'hindwing', T, oribir.Individual.MAX_WING, t('axes.time'), t('axes.hindwing'));
         this._plot_flight = new oribir.plot.Plot(parent, 'flight', T, oribir.Individual.MAX_FLIGHT, t('axes.time'), t('axes.distance'));
-        d3.select(window).on('resize', function () {
-            self.update_width();
-        });
+        d3.select(window).on('resize', function () { self.update_width(); });
     }
     TabContent.prototype.get_ready = function () {
         var N = parseInt(param_value('popsize'));
@@ -84,62 +87,92 @@ i18n.init({
     shortcutFunction: 'defaultValue'
 }, function (t) {
     var params = [
-        [t('params.popsize') + ' (<var>N</var>)', 'popsize', 100, 1000, 100, 100],
-        [t('params.mu') + ' (<var>μ</var>)', 'mu', 1e-3, 1e-1, 1e-3, 1e-2],
-        [t('params.observation'), 'observation', 50, 400, 50, 100],
-        [t('params.oasis'), 'oasis', 0, 2, 1, 0]
+        [t('params.popsize') + ' (<var>N</var>)',
+            'popsize', 100, 1000, 100, 100],
+        [t('params.mu') + ' (<var>μ</var>)',
+            'mu', 1e-3, 1e-1, 1e-3, 1e-2],
+        [t('params.observation'),
+            'observation', 50, 400, 50, 100],
+        [t('params.oasis'),
+            'oasis', 0, 2, 1, 0]
     ];
-    var input_items = d3.select('form').selectAll('dl').data(params).enter().append('dl').attr('id', function (d) {
-        return d[1];
-    }).attr('class', 'parameter');
-    input_items.append('label').attr('class', 'value').attr('for', function (d) {
-        return d[1];
-    }).text(function (d) {
-        return d[5];
+    var input_items = d3.select('form')
+        .selectAll('dl')
+        .data(params).enter()
+        .append('dl')
+        .attr('id', function (d) { return d[1]; })
+        .attr('class', 'parameter');
+    input_items.append('label')
+        .attr('class', 'value')
+        .attr('for', function (d) { return d[1]; })
+        .text(function (d) { return d[5]; });
+    input_items.append('dt').append('label')
+        .attr('class', 'name')
+        .attr('for', function (d) { return d[1]; })
+        .html(function (d) { return d[0]; });
+    var input_ranges = input_items.append('dd')
+        .attr('class', 'param_range');
+    input_ranges.append('input')
+        .attr('type', 'range')
+        .attr('name', function (d) { return d[1]; })
+        .attr('min', function (d) { return d[2]; })
+        .attr('max', function (d) { return d[3]; })
+        .attr('step', function (d) { return d[4]; })
+        .attr('value', function (d) { return d[5]; })
+        .on('input', function (d) {
+        input_items
+            .select('#' + d[1] + ' label.value')
+            .text(this.value);
     });
-    input_items.append('dt').append('label').attr('class', 'name').attr('for', function (d) {
-        return d[1];
-    }).html(function (d) {
-        return d[0];
-    });
-    var input_ranges = input_items.append('dd').attr('class', 'param_range');
-    input_ranges.append('input').attr('type', 'range').attr('name', function (d) {
-        return d[1];
-    }).attr('min', function (d) {
-        return d[2];
-    }).attr('max', function (d) {
-        return d[3];
-    }).attr('step', function (d) {
-        return d[4];
-    }).attr('value', function (d) {
-        return d[5];
-    }).on('input', function (d) {
-        input_items.select('#' + d[1] + ' label.value').text(this.value);
-    });
-    input_ranges.append('label').attr('class', 'min').attr('for', function (d) {
-        return d[1];
-    }).text(function (d) {
-        return d[2];
-    });
-    input_ranges.append('label').attr('class', 'max').attr('for', function (d) {
-        return d[1];
-    }).text(function (d) {
-        return d[3];
-    });
-    var lock_button = d3.select('form').append('button').attr('type', 'button').attr('class', 'controller lock').text('Lock Parameters');
+    input_ranges.append('label')
+        .attr('class', 'min')
+        .attr('for', function (d) { return d[1]; })
+        .text(function (d) { return d[2]; });
+    input_ranges.append('label')
+        .attr('class', 'max')
+        .attr('for', function (d) { return d[1]; })
+        .text(function (d) { return d[3]; });
+    var lock_button = d3.select('form').append('button')
+        .attr('type', 'button')
+        .attr('class', 'controller lock')
+        .text('Lock Parameters');
     var tabs = d3.select('#tabs');
     var li1 = tabs.append('li');
-    li1.append('input').attr('id', 'tab1').attr('name', 'tab').attr('type', 'radio').property('checked', true);
-    li1.append('label').attr('for', 'tab1').text(t('population') + ' 1');
-    li1.append('div').attr('class', 'tab-content').attr('id', 'pop1');
+    li1.append('input')
+        .attr('id', 'tab1')
+        .attr('name', 'tab')
+        .attr('type', 'radio')
+        .property('checked', true);
+    li1.append('label')
+        .attr('for', 'tab1')
+        .text(t('population') + ' 1');
+    li1.append('div')
+        .attr('class', 'tab-content')
+        .attr('id', 'pop1');
     var li2 = tabs.append('li');
-    li2.append('input').attr('id', 'tab2').attr('name', 'tab').attr('type', 'radio');
-    li2.append('label').attr('for', 'tab2').text(t('population') + ' 2');
-    li2.append('div').attr('class', 'tab-content').attr('id', 'pop2').text('UNDER CONSTRUCTION');
+    li2.append('input')
+        .attr('id', 'tab2')
+        .attr('name', 'tab')
+        .attr('type', 'radio');
+    li2.append('label')
+        .attr('for', 'tab2')
+        .text(t('population') + ' 2');
+    li2.append('div')
+        .attr('class', 'tab-content')
+        .attr('id', 'pop2')
+        .text('UNDER CONSTRUCTION');
     var li3 = tabs.append('li');
-    li3.append('input').attr('id', 'tab3').attr('name', 'tab').attr('type', 'radio');
-    li3.append('label').attr('for', 'tab3').text(t('breeding experiment'));
-    li3.append('div').attr('class', 'tab-content').attr('id', 'breeding').text('UNDER CONSTRUCTION');
+    li3.append('input')
+        .attr('id', 'tab3')
+        .attr('name', 'tab')
+        .attr('type', 'radio');
+    li3.append('label')
+        .attr('for', 'tab3')
+        .text(t('breeding experiment'));
+    li3.append('div')
+        .attr('class', 'tab-content')
+        .attr('id', 'breeding')
+        .text('UNDER CONSTRUCTION');
     var tab1 = new TabContent('#pop1', t);
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');
@@ -160,7 +193,16 @@ i18n.init({
     }
     lock_button.on('click', toggle_form);
     var footer = d3.select('#footer');
-    footer.append('a').attr('class', 'button').attr('href', 'https://github.com/heavywatal/oribir.js/releases/latest').text(t('footer.download'));
-    footer.append('a').attr('class', 'button').attr('href', 'https://github.com/heavywatal/oribir.js/issues').text(t('footer.report'));
-    footer.append('a').attr('class', 'button').attr('href', 'https://github.com/heavywatal/oribir.js').text(t('footer.develop'));
+    footer.append('a')
+        .attr('class', 'button')
+        .attr('href', 'https://github.com/heavywatal/oribir.js/releases/latest')
+        .text(t('footer.download'));
+    footer.append('a')
+        .attr('class', 'button')
+        .attr('href', 'https://github.com/heavywatal/oribir.js/issues')
+        .text(t('footer.report'));
+    footer.append('a')
+        .attr('class', 'button')
+        .attr('href', 'https://github.com/heavywatal/oribir.js')
+        .text(t('footer.develop'));
 });

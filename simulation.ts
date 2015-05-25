@@ -1,3 +1,5 @@
+'use strict';
+
 module oribir.util {
     export function range(start, stop=null) {
         var result = []
@@ -140,7 +142,7 @@ export class Population {
         };
     }
 
-    reproduce() {
+    reproduce(): void {
         var half = Math.floor(this._members.length / 2);
         var offsprings = [];
         for (var i=0; i<half; ++i) {
@@ -150,7 +152,7 @@ export class Population {
         this._members = offsprings;
     }
 
-    survive() {
+    survive(): void {
         var fitness_values = [];
         for (var i=0; i<this._members.length; ++i) {
             fitness_values.push(this._landscape(this._members[i].flight));
@@ -177,15 +179,15 @@ export class Population {
 
     get size(): number {return this._members.length;}
 
-    print() {
+    print(): void {
         console.log(this._members);
     }
-    test() {
+    test(): void {
         var ind = this._members[0];
     }
 }
 
-    export function roulette(fitness: number[], n: number=null) {
+    export function roulette(fitness: number[], n: number=null): number[] {
         if (n === null) {
             n = fitness.length;
         }

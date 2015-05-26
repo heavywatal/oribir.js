@@ -59,8 +59,8 @@ class TabContent {
 
     private display_population(): number[][] {
         var snapshot = this._population.snapshot();
-        d3.selectAll('g.bird').transition().delay(0).remove();
-        d3.selectAll('g.bird').remove();
+        this._field.selectAll('g.bird').transition().delay(0).remove();
+        this._field.selectAll('g.bird').remove();
         var n_samples = 3;
         var range = oribir.util.range(snapshot[0].length);
         var indices = oribir.random.sample(range, n_samples);
@@ -194,8 +194,7 @@ i18n.init({
         .text(t('population')+' 2');
     li2.append('div')
         .attr('class', 'tab-content')
-        .attr('id', 'pop2')
-        .text('UNDER CONSTRUCTION');
+        .attr('id', 'pop2');
 
     var li3 = tabs.append('li');
     li3.append('input')
@@ -211,20 +210,23 @@ i18n.init({
         .text('UNDER CONSTRUCTION');
 
     var tab1 = new TabContent('#pop1', t);
+    var tab2 = new TabContent('#pop2', t);
 
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');
         if (is_unlocked) {  // lock
             d3.selectAll('.param_range input').attr('disabled', true);
-            d3.select('button.start').attr('disabled', null);
+            d3.selectAll('button.start').attr('disabled', null);
             lock_button.text('Reset');
             oribir.Individual.MUTATION_RATE = parseFloat(param_value('mu'));
             tab1.get_ready();
+            tab2.get_ready();
         } else {  // reset
             d3.selectAll('.param_range input').attr('disabled', null);
-            d3.select('button.start').attr('disabled', true);
+            d3.selectAll('button.start').attr('disabled', true);
             lock_button.text('Lock');
             tab1.erase_plot();
+            tab2.erase_plot();
             d3.selectAll('g.bird').remove();
         }
     }

@@ -25,7 +25,6 @@ input[type="radio"] {display: none;}
 
 #tabs label {
     cursor: pointer;
-    background: #999999;
     margin: 4px 4px 0 0;
     padding: 10px 15px;
     border-radius: 3px 3px 0 0;
@@ -35,7 +34,6 @@ input[type="radio"] {display: none;}
     display: none;
     position: absolute;
     left: 0;
-    background: #CCCCCC;
     z-index: 2;
     padding: 10px;
     box-sizing: border-box;
@@ -46,8 +44,19 @@ input[type="radio"] {display: none;}
     display: block;
 }
 #tabs input[name="tab"]:checked ~ label {
-    background: #CCCCCC;
     margin-top: 0;
+}
+
+#tabs label[for="tab1"], #pop1, #pop1 .graph {
+    background: #EEDDDD;
+}
+
+#tabs label[for="tab2"], #pop2, #pop2 .graph {
+    background: #DDEEDD;
+}
+
+#tabs label[for="tab3"], #breeding {
+    background: #DDDDEE;
 }
 
 dl {

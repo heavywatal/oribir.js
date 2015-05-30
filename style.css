@@ -32,6 +32,9 @@ input[type="radio"] {display: none;}
 
 .tab-content {
     display: none;
+/*    visibility: hidden;*/
+/*    z-index: 1;
+    opacity: 0;*/
     position: absolute;
     left: 0;
     z-index: 2;
@@ -42,20 +45,23 @@ input[type="radio"] {display: none;}
 
 #tabs input[name="tab"]:checked ~ .tab-content {
     display: block;
+/*    visibility: visible;
+    z-index: 100;
+    opacity: 1;*/
 }
 #tabs input[name="tab"]:checked ~ label {
     margin-top: 0;
 }
 
-#tabs label[for="tab1"], #pop1, #pop1 .graph {
+#tabs label[for="radio1"], #tab1 .tab-content, #tab1 .graph {
     background: #EEDDDD;
 }
 
-#tabs label[for="tab2"], #pop2, #pop2 .graph {
+#tabs label[for="radio2"], #tab2 .tab-content, #tab2 .graph {
     background: #DDEEDD;
 }
 
-#tabs label[for="tab3"], #breeding {
+#tabs label[for="radio3"], #tab3 .tab-content {
     background: #DDDDEE;
 }
 

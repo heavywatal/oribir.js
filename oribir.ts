@@ -16,9 +16,11 @@ class TabContent {
     private _plot_hindwing;
     private _plot_flight;
 
-    constructor(id: string, t) {
-        var tab_content = d3.select(id);
+    constructor(parent_id: string, t) {
         var self = this;
+        var radio = d3.select(parent_id + ' input');
+        radio.property('checked', true);  // to calc width
+        var tab_content = d3.select(parent_id + ' .tab-content');
         tab_content.append('button')
           .attr('type', 'button')
           .attr('class', 'controller start')
@@ -41,7 +43,8 @@ class TabContent {
         this._plot_flight = new oribir.plot.Plot(parent,
             'flight', T, oribir.Individual.MAX_FLIGHT,
             t('axes.time'), t('axes.distance'));
-        d3.select(window).on('resize', function() {self.update_width()});
+        d3.select(window).on('resize', function() {self.update_width();});
+        radio.property('checked', false);
     }
 
     public get_ready() {
@@ -171,46 +174,43 @@ i18n.init({
         .text('Lock Parameters');
 
     var tabs = d3.select('#tabs');
-    var li1 = tabs.append('li');
+    var li1 = tabs.append('li').attr('id', 'tab1');
     li1.append('input')
-        .attr('id', 'tab1')
+        .attr('id', 'radio1')
         .attr('name', 'tab')
-        .attr('type', 'radio')
-        .property('checked', true);
+        .attr('type', 'radio');
     li1.append('label')
-        .attr('for', 'tab1')
+        .attr('for', 'radio1')
         .text(t('population')+' 1');
     li1.append('div')
-        .attr('class', 'tab-content')
-        .attr('id', 'pop1');
+        .attr('class', 'tab-content');
 
-    var li2 = tabs.append('li');
+    var li2 = tabs.append('li').attr('id', 'tab2');
     li2.append('input')
-        .attr('id', 'tab2')
+        .attr('id', 'radio2')
         .attr('name', 'tab')
         .attr('type', 'radio');
     li2.append('label')
-        .attr('for', 'tab2')
+        .attr('for', 'radio2')
         .text(t('population')+' 2');
     li2.append('div')
-        .attr('class', 'tab-content')
-        .attr('id', 'pop2');
+        .attr('class', 'tab-content');
 
-    var li3 = tabs.append('li');
+    var li3 = tabs.append('li').attr('id', 'tab3');
     li3.append('input')
-        .attr('id', 'tab3')
+        .attr('id', 'radio3')
         .attr('name', 'tab')
         .attr('type', 'radio');
     li3.append('label')
-        .attr('for', 'tab3')
+        .attr('for', 'radio3')
         .text(t('breeding experiment'));
     li3.append('div')
         .attr('class', 'tab-content')
-        .attr('id', 'breeding')
         .text('UNDER CONSTRUCTION');
 
-    var tab1 = new TabContent('#pop1', t);
-    var tab2 = new TabContent('#pop2', t);
+    var tab1 = new TabContent('#tab1', t);
+    var tab2 = new TabContent('#tab2', t);
+    d3.select('#radio1').property('checked', true);
 
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');

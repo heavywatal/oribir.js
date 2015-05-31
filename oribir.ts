@@ -9,18 +9,31 @@ function param_value(id: string): string {
     return <any> d3.select('#'+ id +' input').property('value');
 }
 
-class TabContent {
+class EvolutionTab {
+    private static _NUM_INSTANCES: number = 0;
     private _population: oribir.Population;
     private _field;
     private _plot_forewing;
     private _plot_hindwing;
     private _plot_flight;
 
-    constructor(parent_id: string, t) {
+    constructor(parent, t) {
+        var num = ++EvolutionTab._NUM_INSTANCES;
+        var li = parent.append('li').attr('id', 'tab' + num);
+        li.append('input')
+            .attr('id', 'radio' + num)
+            .attr('name', 'tab')
+            .attr('type', 'radio');
+        li.append('label')
+            .attr('for', 'radio' + num)
+            .text(t('population') + ' ' + num);
+        li.append('div')
+            .attr('class', 'tab-content');
+
         var self = this;
-        var radio = d3.select(parent_id + ' input');
+        var radio = li.select('input');
         radio.property('checked', true);  // to calc width
-        var tab_content = d3.select(parent_id + ' .tab-content');
+        var tab_content = li.select('.tab-content');
         tab_content.append('button')
           .attr('type', 'button')
           .attr('class', 'controller start')
@@ -111,6 +124,30 @@ class TabContent {
     }
 }
 
+class BreedingTab {
+    private static _NUM_INSTANCES: number = 0;
+    private _population: oribir.Population;
+    private _field;
+    private _plot_forewing;
+    private _plot_hindwing;
+    private _plot_flight;
+
+    constructor(parent, t) {
+        var num = 3;
+        var li = parent.append('li').attr('id', 'tab' + num);
+        li.append('input')
+            .attr('id', 'radio' + num)
+            .attr('name', 'tab')
+            .attr('type', 'radio');
+        li.append('label')
+            .attr('for', 'radio' + num)
+            .text(t('breeding experiment'));
+        li.append('div')
+            .attr('class', 'tab-content')
+            .text('UNDER CONSTRUCTION');
+    }
+}
+
 
 i18n.init({
   resGetPath: 'locales/__ns__.__lng__.json',
@@ -174,42 +211,9 @@ i18n.init({
         .text('Lock Parameters');
 
     var tabs = d3.select('#tabs');
-    var li1 = tabs.append('li').attr('id', 'tab1');
-    li1.append('input')
-        .attr('id', 'radio1')
-        .attr('name', 'tab')
-        .attr('type', 'radio');
-    li1.append('label')
-        .attr('for', 'radio1')
-        .text(t('population')+' 1');
-    li1.append('div')
-        .attr('class', 'tab-content');
-
-    var li2 = tabs.append('li').attr('id', 'tab2');
-    li2.append('input')
-        .attr('id', 'radio2')
-        .attr('name', 'tab')
-        .attr('type', 'radio');
-    li2.append('label')
-        .attr('for', 'radio2')
-        .text(t('population')+' 2');
-    li2.append('div')
-        .attr('class', 'tab-content');
-
-    var li3 = tabs.append('li').attr('id', 'tab3');
-    li3.append('input')
-        .attr('id', 'radio3')
-        .attr('name', 'tab')
-        .attr('type', 'radio');
-    li3.append('label')
-        .attr('for', 'radio3')
-        .text(t('breeding experiment'));
-    li3.append('div')
-        .attr('class', 'tab-content')
-        .text('UNDER CONSTRUCTION');
-
-    var tab1 = new TabContent('#tab1', t);
-    var tab2 = new TabContent('#tab2', t);
+    var tab1 = new EvolutionTab(tabs, t);
+    var tab2 = new EvolutionTab(tabs, t);
+    var tab3 = new BreedingTab(tabs, t);
     d3.select('#radio1').property('checked', true);
 
     function toggle_form() {

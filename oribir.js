@@ -7,12 +7,23 @@
 function param_value(id) {
     return d3.select('#' + id + ' input').property('value');
 }
-var TabContent = (function () {
-    function TabContent(parent_id, t) {
+var EvolutionTab = (function () {
+    function EvolutionTab(parent, t) {
+        var num = ++EvolutionTab._NUM_INSTANCES;
+        var li = parent.append('li').attr('id', 'tab' + num);
+        li.append('input')
+            .attr('id', 'radio' + num)
+            .attr('name', 'tab')
+            .attr('type', 'radio');
+        li.append('label')
+            .attr('for', 'radio' + num)
+            .text(t('population') + ' ' + num);
+        li.append('div')
+            .attr('class', 'tab-content');
         var self = this;
-        var radio = d3.select(parent_id + ' input');
+        var radio = li.select('input');
         radio.property('checked', true); // to calc width
-        var tab_content = d3.select(parent_id + ' .tab-content');
+        var tab_content = li.select('.tab-content');
         tab_content.append('button')
             .attr('type', 'button')
             .attr('class', 'controller start')
@@ -31,18 +42,18 @@ var TabContent = (function () {
         d3.select(window).on('resize', function () { self.update_width(); });
         radio.property('checked', false);
     }
-    TabContent.prototype.get_ready = function () {
+    EvolutionTab.prototype.get_ready = function () {
         var N = parseInt(param_value('popsize'));
         var env = param_value('oasis');
         this._population = new oribir.Population(N, env);
         this.display_population();
     };
-    TabContent.prototype.erase_plot = function () {
+    EvolutionTab.prototype.erase_plot = function () {
         this._plot_forewing.path_d([]);
         this._plot_hindwing.path_d([]);
         this._plot_flight.path_d([]);
     };
-    TabContent.prototype.display_population = function () {
+    EvolutionTab.prototype.display_population = function () {
         var snapshot = this._population.snapshot();
         this._field.selectAll('g.bird').transition().delay(0).remove();
         this._field.selectAll('g.bird').remove();
@@ -56,7 +67,7 @@ var TabContent = (function () {
         }
         return snapshot;
     };
-    TabContent.prototype.run = function () {
+    EvolutionTab.prototype.run = function () {
         var T = parseInt(param_value('observation'));
         this._plot_forewing.domain([0, T]);
         this._plot_hindwing.domain([0, T]);
@@ -78,12 +89,31 @@ var TabContent = (function () {
             this._population.survive();
         }
     };
-    TabContent.prototype.update_width = function () {
+    EvolutionTab.prototype.update_width = function () {
         this._plot_forewing.update_width();
         this._plot_hindwing.update_width();
         this._plot_flight.update_width();
     };
-    return TabContent;
+    EvolutionTab._NUM_INSTANCES = 0;
+    return EvolutionTab;
+})();
+var BreedingTab = (function () {
+    function BreedingTab(parent, t) {
+        var num = 3;
+        var li = parent.append('li').attr('id', 'tab' + num);
+        li.append('input')
+            .attr('id', 'radio' + num)
+            .attr('name', 'tab')
+            .attr('type', 'radio');
+        li.append('label')
+            .attr('for', 'radio' + num)
+            .text(t('breeding experiment'));
+        li.append('div')
+            .attr('class', 'tab-content')
+            .text('UNDER CONSTRUCTION');
+    }
+    BreedingTab._NUM_INSTANCES = 0;
+    return BreedingTab;
 })();
 i18n.init({
     resGetPath: 'locales/__ns__.__lng__.json',
@@ -140,39 +170,9 @@ i18n.init({
         .attr('class', 'controller lock')
         .text('Lock Parameters');
     var tabs = d3.select('#tabs');
-    var li1 = tabs.append('li').attr('id', 'tab1');
-    li1.append('input')
-        .attr('id', 'radio1')
-        .attr('name', 'tab')
-        .attr('type', 'radio');
-    li1.append('label')
-        .attr('for', 'radio1')
-        .text(t('population') + ' 1');
-    li1.append('div')
-        .attr('class', 'tab-content');
-    var li2 = tabs.append('li').attr('id', 'tab2');
-    li2.append('input')
-        .attr('id', 'radio2')
-        .attr('name', 'tab')
-        .attr('type', 'radio');
-    li2.append('label')
-        .attr('for', 'radio2')
-        .text(t('population') + ' 2');
-    li2.append('div')
-        .attr('class', 'tab-content');
-    var li3 = tabs.append('li').attr('id', 'tab3');
-    li3.append('input')
-        .attr('id', 'radio3')
-        .attr('name', 'tab')
-        .attr('type', 'radio');
-    li3.append('label')
-        .attr('for', 'radio3')
-        .text(t('breeding experiment'));
-    li3.append('div')
-        .attr('class', 'tab-content')
-        .text('UNDER CONSTRUCTION');
-    var tab1 = new TabContent('#tab1', t);
-    var tab2 = new TabContent('#tab2', t);
+    var tab1 = new EvolutionTab(tabs, t);
+    var tab2 = new EvolutionTab(tabs, t);
+    var tab3 = new BreedingTab(tabs, t);
     d3.select('#radio1').property('checked', true);
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');

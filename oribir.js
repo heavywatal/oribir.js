@@ -39,7 +39,7 @@ var EvolutionTab = (function () {
         this._plot_forewing = new oribir.plot.Plot(parent, 'forewing', T, oribir.Individual.MAX_WING, t('axes.time'), t('axes.forewing'));
         this._plot_hindwing = new oribir.plot.Plot(parent, 'hindwing', T, oribir.Individual.MAX_WING, t('axes.time'), t('axes.hindwing'));
         this._plot_flight = new oribir.plot.Plot(parent, 'flight', T, oribir.Individual.MAX_FLIGHT, t('axes.time'), t('axes.distance'));
-        d3.select(window).on('resize', function () { self.update_width(); });
+        radio.on('change', function () { self.update_width(); });
         radio.property('checked', false);
     }
     EvolutionTab.prototype.get_ready = function () {
@@ -47,6 +47,11 @@ var EvolutionTab = (function () {
         var env = param_value('oasis');
         this._population = new oribir.Population(N, env);
         this.display_population();
+    };
+    EvolutionTab.prototype.update_width = function () {
+        this._plot_forewing.update_width();
+        this._plot_hindwing.update_width();
+        this._plot_flight.update_width();
     };
     EvolutionTab.prototype.erase_plot = function () {
         this._plot_forewing.path_d([]);
@@ -88,11 +93,6 @@ var EvolutionTab = (function () {
             this._population.reproduce();
             this._population.survive();
         }
-    };
-    EvolutionTab.prototype.update_width = function () {
-        this._plot_forewing.update_width();
-        this._plot_hindwing.update_width();
-        this._plot_flight.update_width();
     };
     EvolutionTab._NUM_INSTANCES = 0;
     return EvolutionTab;
@@ -174,6 +174,10 @@ i18n.init({
     var tab2 = new EvolutionTab(tabs, t);
     var tab3 = new BreedingTab(tabs, t);
     d3.select('#radio1').property('checked', true);
+    d3.select(window).on('resize', function () {
+        tab1.update_width();
+        tab2.update_width();
+    });
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');
         if (is_unlocked) {

@@ -56,7 +56,7 @@ class EvolutionTab {
         this._plot_flight = new oribir.plot.Plot(parent,
             'flight', T, oribir.Individual.MAX_FLIGHT,
             t('axes.time'), t('axes.distance'));
-        d3.select(window).on('resize', function() {self.update_width();});
+        radio.on('change', function(){self.update_width();});
         radio.property('checked', false);
     }
 
@@ -65,6 +65,12 @@ class EvolutionTab {
         var env = param_value('oasis');
         this._population = new oribir.Population(N, env);
         this.display_population();
+    }
+
+    public update_width(): void {
+        this._plot_forewing.update_width();
+        this._plot_hindwing.update_width();
+        this._plot_flight.update_width();
     }
 
     public erase_plot(): void {
@@ -115,12 +121,6 @@ class EvolutionTab {
             this._population.reproduce();
             this._population.survive();
         }
-    }
-
-    private update_width(): void {
-        this._plot_forewing.update_width();
-        this._plot_hindwing.update_width();
-        this._plot_flight.update_width();
     }
 }
 
@@ -215,6 +215,10 @@ i18n.init({
     var tab2 = new EvolutionTab(tabs, t);
     var tab3 = new BreedingTab(tabs, t);
     d3.select('#radio1').property('checked', true);
+    d3.select(window).on('resize', function(){
+        tab1.update_width();
+        tab2.update_width();
+    });
 
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');

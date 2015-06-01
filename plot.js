@@ -59,6 +59,8 @@ var oribir;
             }
             Plot.prototype.update_width = function () {
                 var width = parseInt(this._parent.style('width'));
+                if (isNaN(width))
+                    return;
                 var panel_width = width - PADDING.left - PADDING.right;
                 var panel_height = parseInt(this._panel.attr('height'));
                 this._panel_background.attr('width', panel_width);

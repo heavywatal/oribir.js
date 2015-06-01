@@ -72,6 +72,7 @@ module oribir.plot {
 
         update_width() {
             var width = parseInt(this._parent.style('width'));
+            if (isNaN(width)) return;
             var panel_width = width - PADDING.left - PADDING.right;
             var panel_height = parseInt(this._panel.attr('height'));
             this._panel_background.attr('width', panel_width);

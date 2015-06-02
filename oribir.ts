@@ -11,7 +11,13 @@ function param_value(id: string): string {
 
 class EvolutionTab {
     private static _NUM_INSTANCES: number = 0;
+    private static _OASIS = {
+        '0': 'poor',
+        '1': 'medium',
+        '2': 'rich',
+    };
     private _population: oribir.Population;
+    private _canvas;
     private _field;
     private _plot_forewing;
     private _plot_hindwing;
@@ -40,9 +46,9 @@ class EvolutionTab {
           .attr('disabled', true)
           .text('START!')
           .on('click', function(){self.run()});
-        var div_field = tab_content.append('div')
+        this._canvas = tab_content.append('div')
           .attr('class', 'field');
-        this._field = oribir.graphics.Field(div_field);
+        this._field = oribir.graphics.Field(this._canvas, 'medium');
 
         var T = parseInt(param_value('observation'));
         var parent = tab_content.append('div')
@@ -63,7 +69,9 @@ class EvolutionTab {
     public get_ready() {
         var N = parseInt(param_value('popsize'));
         var env = param_value('oasis');
+        var oasis = EvolutionTab._OASIS[env];
         this._population = new oribir.Population(N, env);
+        this._field = oribir.graphics.Field(this._canvas, oasis);
         this.display_population();
     }
 

@@ -85,9 +85,11 @@ module oribir.graphics {
         oasis.attr('transform', 'translate('+ x +','+ y +')');
     }
 
-    export function Field(parent) {
+    export function Field(parent, oasis) {
+        parent.select('svg').remove();
         var field = parent.append('svg');
         field.append('rect')
+            .attr('class', 'oasis-' + oasis)
             .attr('width', '100%')
             .attr('height', '100%');
         oribir.graphics.Oasis(field, 100, 100);

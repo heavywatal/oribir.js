@@ -30,9 +30,9 @@ var EvolutionTab = (function () {
             .attr('disabled', true)
             .text('START!')
             .on('click', function () { self.run(); });
-        var div_field = tab_content.append('div')
+        this._canvas = tab_content.append('div')
             .attr('class', 'field');
-        this._field = oribir.graphics.Field(div_field);
+        this._field = oribir.graphics.Field(this._canvas, 'medium');
         var T = parseInt(param_value('observation'));
         var parent = tab_content.append('div')
             .attr('class', 'graph');
@@ -45,7 +45,9 @@ var EvolutionTab = (function () {
     EvolutionTab.prototype.get_ready = function () {
         var N = parseInt(param_value('popsize'));
         var env = param_value('oasis');
+        var oasis = EvolutionTab._OASIS[env];
         this._population = new oribir.Population(N, env);
+        this._field = oribir.graphics.Field(this._canvas, oasis);
         this.display_population();
     };
     EvolutionTab.prototype.update_width = function () {
@@ -95,6 +97,11 @@ var EvolutionTab = (function () {
         }
     };
     EvolutionTab._NUM_INSTANCES = 0;
+    EvolutionTab._OASIS = {
+        '0': 'poor',
+        '1': 'medium',
+        '2': 'rich',
+    };
     return EvolutionTab;
 })();
 var BreedingTab = (function () {

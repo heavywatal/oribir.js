@@ -188,8 +188,14 @@ text {
     height: 400px;
 }
 
-.field svg > rect {
+.oasis-poor {
     fill: #FF6600;
+}
+.oasis-medium {
+    fill: #FF8800;
+}
+.oasis-rich {
+    fill: #FFAA00;
 }
 
 line.trunk {

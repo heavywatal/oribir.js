@@ -16,6 +16,7 @@ class EvolutionTab {
         '1': 'medium',
         '2': 'rich',
     };
+    private _i: number;
     private _population: oribir.Population;
     private _canvas;
     private _field;
@@ -24,15 +25,15 @@ class EvolutionTab {
     private _plot_flight;
 
     constructor(parent, t) {
-        var num = ++EvolutionTab._NUM_INSTANCES;
-        var li = parent.append('li').attr('id', 'tab' + num);
+        this._i = ++EvolutionTab._NUM_INSTANCES;
+        var li = parent.append('li').attr('id', 'tab' + this._i);
         li.append('input')
-            .attr('id', 'radio' + num)
+            .attr('id', 'radio' + this._i)
             .attr('name', 'tab')
             .attr('type', 'radio');
         li.append('label')
-            .attr('for', 'radio' + num)
-            .text(t('population') + ' ' + num);
+            .attr('for', 'radio' + this._i)
+            .text(t('Population') + ' ' + this._i);
         li.append('div')
             .attr('class', 'tab-content');
 
@@ -48,7 +49,7 @@ class EvolutionTab {
           .on('click', function(){self.run()});
         this._canvas = tab_content.append('div')
           .attr('class', 'field');
-        this._field = oribir.graphics.Field(this._canvas, 'medium');
+        this.update_field();
 
         var T = parseInt(param_value('observation'));
         var parent = tab_content.append('div')
@@ -68,11 +69,16 @@ class EvolutionTab {
 
     public get_ready() {
         var N = parseInt(param_value('popsize'));
-        var env = param_value('oasis');
-        var oasis = EvolutionTab._OASIS[env];
-        this._population = new oribir.Population(N, env);
-        this._field = oribir.graphics.Field(this._canvas, oasis);
+        var oasis = this.update_field();
+        this._population = new oribir.Population(N, oasis);
         this.display_population();
+    }
+
+    public update_field(): string {
+        var env = param_value('oasis' + this._i);
+        var oasis = EvolutionTab._OASIS[env];
+        this._field = oribir.graphics.Field(this._canvas, oasis);
+        return oasis
     }
 
     public update_width(): void {
@@ -149,7 +155,7 @@ class BreedingTab {
             .attr('type', 'radio');
         li.append('label')
             .attr('for', 'radio' + num)
-            .text(t('breeding experiment'));
+            .text(t('Breeding experiment'));
         li.append('div')
             .attr('class', 'tab-content')
             .text('UNDER CONSTRUCTION');
@@ -169,8 +175,10 @@ i18n.init({
          'mu', 1e-3, 1e-1, 1e-3, 1e-2],
         [t('params.observation'),
          'observation', 50, 400, 50, 100],
-        [t('params.oasis'),
-         'oasis', 0, 2, 1, 0]
+        [t('Population') + ' 1 ' + t('Oasis'),
+         'oasis1', 0, 2, 1, 0],
+        [t('Population') + ' 2 ' + t('Oasis'),
+         'oasis2', 0, 2, 1, 2]
     ];
 
     var input_items = d3.select('form')
@@ -213,6 +221,9 @@ i18n.init({
         .attr('for', function(d){return d[1];})
         .text(function(d){return d[3];});
 
+    d3.selectAll('#oasis1 .min, #oasis2 .min').text(t('oasis.poor'));
+    d3.selectAll('#oasis1 .max, #oasis2 .max').text(t('oasis.rich'));
+
     var lock_button = d3.select('form').append('button')
         .attr('type', 'button')
         .attr('class', 'controller lock')
@@ -227,6 +238,18 @@ i18n.init({
         tab1.update_width();
         tab2.update_width();
     });
+    function update_oasis1(): void{
+        var oasis = tab1.update_field();
+        d3.select('#oasis1 .value').text(t("oasis." + oasis));
+    }
+    function update_oasis2(){
+        var oasis = tab2.update_field();
+        d3.select('#oasis2 .value').text(t("oasis." + oasis));
+    }
+    update_oasis1();
+    update_oasis2();
+    d3.select('#oasis1 input').on('input', update_oasis1);
+    d3.select('#oasis2 input').on('input', update_oasis2);
 
     function toggle_form() {
         var is_unlocked = d3.select('button.start').attr('disabled');

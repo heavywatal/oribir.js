@@ -16,6 +16,13 @@
         "report": "不具合報告・提案",
         "develop": "開発元"
     },
-    "population": "集団",
-    "breeding experiment": "交配実験"
+    "oasis": {
+        "poor": "少ない",
+        "medium": "中程度",
+        "rich": "多い"
+    },
+    "Oasis": "オアシス",
+    "Environment": "環境",
+    "Population": "集団",
+    "Breeding experiment": "交配実験"
 }

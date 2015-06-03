@@ -16,6 +16,9 @@
         "report": "Report a bug",
         "develop": "Development site"
     },
-    "population": "Population",
-    "breeding experiment": "Breeding Experiment"
+    "oasis": {
+        "poor": "Poor",
+        "medium": "Medium",
+        "rich": "Rich"
+    },
 }

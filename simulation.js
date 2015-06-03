@@ -145,7 +145,7 @@ var oribir;
     oribir.Individual = Individual;
     var Population = (function () {
         function Population(_size, environment) {
-            if (environment === void 0) { environment = '1'; }
+            if (environment === void 0) { environment = 'medium'; }
             this._size = _size;
             this._members = [];
             for (var i = 0; i < this._size; ++i) {
@@ -202,9 +202,9 @@ var oribir;
             var ind = this._members[0];
         };
         Population._OPTIMA = {
-            '0': 0.97,
-            '1': 0.50,
-            '2': 0.03,
+            'poor': 0.97,
+            'medium': 0.50,
+            'rich': 0.03,
         };
         return Population;
     })();

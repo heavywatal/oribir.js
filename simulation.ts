@@ -124,12 +124,12 @@ export class Population {
     private _members: Individual[];
     private _landscape;
     static _OPTIMA = {
-        '0': 0.97,
-        '1': 0.50,
-        '2': 0.03,
+        'poor': 0.97,
+        'medium': 0.50,
+        'rich': 0.03,
     };
 
-    constructor(private _size: number, environment='1') {
+    constructor(private _size: number, environment: string='medium') {
         this._members = [];
         for (var i=0; i<this._size; ++i) {
             this._members.push(new Individual());

@@ -67,6 +67,10 @@ class EvolutionTab {
         radio.property('checked', false);
     }
 
+    public static reset(): void {
+        EvolutionTab._NUM_INSTANCES = 0;
+    }
+
     public get_ready() {
         var N = parseInt(param_value('popsize'));
         var oasis = this.update_field();
@@ -139,13 +143,6 @@ class EvolutionTab {
 }
 
 class BreedingTab {
-    private static _NUM_INSTANCES: number = 0;
-    private _population: oribir.Population;
-    private _field;
-    private _plot_forewing;
-    private _plot_hindwing;
-    private _plot_flight;
-
     constructor(parent, t) {
         var num = 3;
         var li = parent.append('li').attr('id', 'tab' + num);
@@ -163,11 +160,7 @@ class BreedingTab {
 }
 
 
-i18n.init({
-  resGetPath: 'locales/__ns__.__lng__.json',
-  shortcutFunction: 'defaultValue'
-}, function(t) {
-
+function main(t): void {
     var params = [
         [t('params.popsize') + ' (<var>N</var>)',
          'popsize', 100, 1000, 100, 100],
@@ -180,6 +173,28 @@ i18n.init({
         [t('Population') + ' 2 ' + t('Oasis'),
          'oasis2', 0, 2, 1, 2]
     ];
+
+    var languages = [
+        {value: 'en', text: 'English'},
+        {value: 'ja', text: '日本語'}
+    ]
+
+    d3.select('form')
+        .append('select')
+        .attr('id', 'selectlng')
+        .on('change', function(v) {
+           d3.selectAll('select, dl, li, button, a').remove();
+           EvolutionTab.reset();
+           i18n.setLng(languages[this.selectedIndex].value, main);
+        })
+        .selectAll('option')
+        .data(languages)
+        .enter()
+        .append('option')
+        .attr('value', function(d) {return d.value;})
+        .attr('selected', function(d) {
+            if (d.value == i18n.lng()) return 'selected';})
+        .text(function(d) {return d.text;});
 
     var input_items = d3.select('form')
         .selectAll('dl')
@@ -284,4 +299,10 @@ i18n.init({
         .attr('class', 'button')
         .attr('href', 'https://github.com/heavywatal/oribir.js')
         .text(t('footer.develop'));
-});
+};
+
+
+i18n.init({
+  resGetPath: 'locales/__ns__.__lng__.json',
+  shortcutFunction: 'defaultValue'
+}, main);

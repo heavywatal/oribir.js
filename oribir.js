@@ -42,6 +42,9 @@ var EvolutionTab = (function () {
         radio.on('change', function () { self.update_width(); });
         radio.property('checked', false);
     }
+    EvolutionTab.reset = function () {
+        EvolutionTab._NUM_INSTANCES = 0;
+    };
     EvolutionTab.prototype.get_ready = function () {
         var N = parseInt(param_value('popsize'));
         var oasis = this.update_field();
@@ -123,13 +126,9 @@ var BreedingTab = (function () {
             .attr('class', 'tab-content')
             .text('UNDER CONSTRUCTION');
     }
-    BreedingTab._NUM_INSTANCES = 0;
     return BreedingTab;
 })();
-i18n.init({
-    resGetPath: 'locales/__ns__.__lng__.json',
-    shortcutFunction: 'defaultValue'
-}, function (t) {
+function main(t) {
     var params = [
         [t('params.popsize') + ' (<var>N</var>)',
             'popsize', 100, 1000, 100, 100],
@@ -142,6 +141,28 @@ i18n.init({
         [t('Population') + ' 2 ' + t('Oasis'),
             'oasis2', 0, 2, 1, 2]
     ];
+    var languages = [
+        { value: 'en', text: 'English' },
+        { value: 'ja', text: '日本語' }
+    ];
+    d3.select('form')
+        .append('select')
+        .attr('id', 'selectlng')
+        .on('change', function (v) {
+        d3.selectAll('select, dl, li, button, a').remove();
+        EvolutionTab.reset();
+        i18n.setLng(languages[this.selectedIndex].value, main);
+    })
+        .selectAll('option')
+        .data(languages)
+        .enter()
+        .append('option')
+        .attr('value', function (d) { return d.value; })
+        .attr('selected', function (d) {
+        if (d.value == i18n.lng())
+            return 'selected';
+    })
+        .text(function (d) { return d.text; });
     var input_items = d3.select('form')
         .selectAll('dl')
         .data(params).enter()
@@ -238,4 +259,9 @@ i18n.init({
         .attr('class', 'button')
         .attr('href', 'https://github.com/heavywatal/oribir.js')
         .text(t('footer.develop'));
-});
+}
+;
+i18n.init({
+    resGetPath: 'locales/__ns__.__lng__.json',
+    shortcutFunction: 'defaultValue'
+}, main);

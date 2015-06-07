@@ -21,7 +21,7 @@ body {
     display: block;
 }
 
-input[type="radio"] {display: none;}
+#tabs input[type="radio"] {display: none;}
 
 #tabs label {
     cursor: pointer;
@@ -57,6 +57,11 @@ input[type="radio"] {display: none;}
 
 #tabs label[for="radio3"], #tab3 .tab-content {
     background: #DDDDEE;
+}
+
+#selectlng {
+    display: block;
+    margin: 0 0 0 auto;
 }
 
 dl {

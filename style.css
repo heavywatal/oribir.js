@@ -1,7 +1,14 @@
+* {
+        box-sizing: border-box;
+-webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+     -o-box-sizing: border-box;
+}
+
 body {
     margin: 0 10px 10px;
     font-family: "Noto Sans", "Segoe UI", sans-serif;
-    font-size: 110%;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -47,15 +54,15 @@ body {
     margin-top: 0;
 }
 
-#tabs label[for="radio1"], #tab1 .tab-content, #tab1 .graph {
+label[for="radio1"], #tab1 .tab-content, #tab1 .graph {
     background: #EEDDDD;
 }
 
-#tabs label[for="radio2"], #tab2 .tab-content, #tab2 .graph {
+label[for="radio2"], #tab2 .tab-content, #tab2 .graph {
     background: #DDEEDD;
 }
 
-#tabs label[for="radio3"], #tab3 .tab-content {
+label[for="radio3"], #tab3 .tab-content {
     background: #DDDDEE;
 }
 

@@ -286,7 +286,7 @@ function main(t): void {
     }
     lock_button.on('click', toggle_form);
 
-    var footer = d3.select('#footer');
+    var footer = d3.select('footer');
     footer.append('a')
         .attr('class', 'button')
         .attr('href', 'https://github.com/heavywatal/oribir.js/releases/latest')

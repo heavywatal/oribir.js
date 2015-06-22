@@ -150,13 +150,13 @@ input {
     cursor: default;
 }
 
-#footer .button {
+footer .button {
     margin: 12px 4px;
     background-color: #AAAAAA;
     font-size: 80%;
 }
 
-#footer {
+footer {
     text-align: right;
 }
 

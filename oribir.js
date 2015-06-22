@@ -124,7 +124,8 @@ function main(t) {
         { value: 'en', text: 'English' },
         { value: 'ja', text: '日本語' }
     ];
-    d3.select('form').append('select').attr('id', 'selectlng').on('change', function (v) {
+    var form = d3.select('main').append('form');
+    form.append('select').attr('id', 'selectlng').on('change', function (v) {
         d3.selectAll('select, dl, li, button, a').remove();
         EvolutionTab.reset();
         i18n.setLng(languages[this.selectedIndex].value, main);
@@ -136,7 +137,7 @@ function main(t) {
     }).text(function (d) {
         return d.text;
     });
-    var input_items = d3.select('form').selectAll('dl').data(params).enter().append('dl').attr('id', function (d) {
+    var input_items = form.selectAll('dl').data(params).enter().append('dl').attr('id', function (d) {
         return d[1];
     }).attr('class', 'parameter');
     input_items.append('label').attr('class', 'value').attr('for', function (d) {
@@ -176,7 +177,7 @@ function main(t) {
     d3.selectAll('#oasis1 .min, #oasis2 .min').text(t('oasis.poor'));
     d3.selectAll('#oasis1 .max, #oasis2 .max').text(t('oasis.rich'));
     var lock_button = d3.select('form').append('button').attr('type', 'button').attr('class', 'controller lock').text('Lock Parameters');
-    var tabs = d3.select('#tabs');
+    var tabs = d3.select('main').append('ul').attr('id', 'tabs');
     var tab1 = new EvolutionTab(tabs, t);
     var tab2 = new EvolutionTab(tabs, t);
     var tab3 = new BreedingTab(tabs, t);

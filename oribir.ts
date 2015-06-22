@@ -179,8 +179,8 @@ function main(t): void {
         {value: 'ja', text: '日本語'}
     ]
 
-    d3.select('form')
-        .append('select')
+    var form = d3.select('main').append('form');
+    form.append('select')
         .attr('id', 'selectlng')
         .on('change', function(v) {
            d3.selectAll('select, dl, li, button, a').remove();
@@ -196,8 +196,7 @@ function main(t): void {
             if (d.value == i18n.lng()) return 'selected';})
         .text(function(d) {return d.text;});
 
-    var input_items = d3.select('form')
-        .selectAll('dl')
+    var input_items = form.selectAll('dl')
         .data(params).enter()
         .append('dl')
         .attr('id', function(d){return d[1];})
@@ -244,7 +243,7 @@ function main(t): void {
         .attr('class', 'controller lock')
         .text('Lock Parameters');
 
-    var tabs = d3.select('#tabs');
+    var tabs = d3.select('main').append('ul').attr('id', 'tabs');
     var tab1 = new EvolutionTab(tabs, t);
     var tab2 = new EvolutionTab(tabs, t);
     var tab3 = new BreedingTab(tabs, t);

@@ -89,7 +89,7 @@ module oribir.plot {
             this._axis_x.call(this._axis_func_x);
         }
 
-        path_d(values: number[], delay: number = 0) {
+        path_d(values: any, delay: number = 0) {
             this._cache = values;
             this._path.transition().delay(delay).ease('linear')
                 .attr('d', this._line(values));

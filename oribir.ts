@@ -160,7 +160,7 @@ class BreedingTab {
 }
 
 
-function main(t): void {
+function main(err: any, t: (key: string, options?: any) => string): void {
     var params = [
         [t('params.popsize') + ' (<var>N</var>)',
          'popsize', 100, 1000, 100, 100],
@@ -210,7 +210,7 @@ function main(t): void {
     input_items.append('dt').append('label')
         .attr('class', 'name')
         .attr('for', function(d){return d[1];})
-        .html(function(d){return d[0];});
+        .html(function(d){return d[0].toString();});
 
     var input_ranges = input_items.append('dd')
         .attr('class', 'param_range');

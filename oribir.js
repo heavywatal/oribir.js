@@ -1,5 +1,4 @@
-/// <reference path='typings/d3/d3.d.ts' />
-/// <reference path='typings/i18next/i18next.d.ts' />
+/// <reference path='typings/tsd.d.ts' />
 /// <reference path='simulation.ts' />
 /// <reference path='graphics.ts' />
 /// <reference path='plot.ts' />

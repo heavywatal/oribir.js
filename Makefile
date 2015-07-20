@@ -13,14 +13,14 @@ DISTFILES := $(addprefix $(PACKAGE)/,${MAIN_DIST} ${D3_DIST} ${I18N_DIST})
 VERSION := $(shell git describe --tags 2>/dev/null || echo v0.0)
 
 ## Targets
-.PHONY: all clean dist open chrome
+.PHONY: all clean dist open chrome safari firefox
 .DEFAULT_GOAL := all
 
 all: ${MAIN_JS}
 	@:
 
 ${MAIN_JS}: ${MAIN_TS} ${MODULES_TS}
-	tsc --target ES5 $<
+	tsc
 
 clean:
 	$(RM) *.tar.gz *.zip
@@ -33,11 +33,11 @@ open:
 	git status
 	open http://heavywatal.github.io/oribir.js/
 
-safari: ${MAIN_JS}
-	open -a Safari index.html
-
 chrome: ${MAIN_JS}
 	open -a Google\ Chrome index.html --args --allow-file-access-from-files
+
+safari: ${MAIN_JS}
+	open -a Safari index.html
 
 firefox: ${MAIN_JS}
 	open -a Firefox index.html

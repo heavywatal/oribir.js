@@ -1,0 +1,12 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "target": "ES5"
+    },
+    "files": [
+        "./graphics.ts",
+        "./oribir.ts",
+        "./plot.ts",
+        "./simulation.ts"
+    ]
+}
